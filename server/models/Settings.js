@@ -17,9 +17,14 @@ const settingsSchema = new mongoose.Schema(
       enum: ['string', 'number', 'boolean', 'object', 'array'],
       default: 'string',
     },
+    inputType: {
+      type: String,
+      enum: ['text', 'textarea'],
+      default: 'text',
+    },
     group: {
       type: String,
-      enum: ['general', 'social', 'contact', 'seo', 'stats', 'appearance'],
+      enum: ['general', 'social', 'contact', 'seo', 'stats', 'appearance', 'about_values', 'about_explore', 'about', 'legal'],
       default: 'general',
     },
     label: {

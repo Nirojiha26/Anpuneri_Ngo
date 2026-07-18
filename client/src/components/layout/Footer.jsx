@@ -1,10 +1,12 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
-  FiHeart, FiFacebook, FiTwitter, FiInstagram, FiLinkedin,
-  FiYoutube, FiMapPin, FiPhone, FiMail, FiSend, FiArrowRight,
+  FiHeart, FiFacebook, FiYoutube, FiMapPin, 
+  FiPhone, FiMail, FiSend, FiArrowRight,
+  FiInstagram, FiLinkedin, FiTwitter
 } from 'react-icons/fi';
 import { useSelector } from 'react-redux';
+import logo from '../../assets/images/logo.jpg';
 
 const Footer = () => {
   const { data: settings } = useSelector((s) => s.settings);
@@ -41,8 +43,8 @@ const Footer = () => {
       <div className="bg-gradient-to-r from-primary-700 to-primary-900">
         <div className="container-custom py-10 flex flex-col md:flex-row items-center justify-between gap-6">
           <div>
-            <h3 className="text-white text-xl font-bold mb-1">Ready to Make a Difference?</h3>
-            <p className="text-primary-200 text-sm">Join thousands of donors and volunteers changing lives every day.</p>
+            <h3 className="text-white text-xl font-bold mb-1">{settings?.footer_cta_title || 'Ready to Make a Difference?'}</h3>
+            <p className="text-primary-200 text-sm">{settings?.footer_cta_desc || 'Join thousands of donors and volunteers changing lives every day.'}</p>
           </div>
           <div className="flex gap-3">
             <Link to="/donate" className="btn-accent text-sm">
@@ -61,32 +63,32 @@ const Footer = () => {
           {/* Brand */}
           <div className="lg:col-span-1">
             <div className="flex items-center gap-2.5 mb-4">
-              <div className="w-9 h-9 bg-primary-600 rounded-xl flex items-center justify-center">
-                <FiHeart className="text-white w-5 h-5" />
-              </div>
+              <img src={logo} alt="Anpuneri Logo" className="h-10 w-auto object-contain rounded" />
               <div>
-                <span className="font-bold text-white text-lg font-heading">Anpuneri</span>
+                <span className="font-bold text-white text-lg font-heading">{settings?.org_name || 'Anpuneri Humanitarian Relief Org'}</span>
               </div>
             </div>
             <p className="text-sm text-gray-400 leading-relaxed mb-5">
               {settings?.org_tagline || 'Empowering communities through education, health support, and social welfare programs since 2010.'}
             </p>
             {/* Social Links */}
-            <div className="flex gap-2.5">
+            <div className="flex flex-wrap gap-2.5">
               {[
-                { icon: <FiFacebook />, href: settings?.social_facebook || 'https://facebook.com' },
-                { icon: <FiTwitter />, href: settings?.social_twitter || 'https://twitter.com' },
-                { icon: <FiInstagram />, href: settings?.social_instagram || 'https://instagram.com' },
-                { icon: <FiLinkedin />, href: settings?.social_linkedin || 'https://linkedin.com' },
-                { icon: <FiYoutube />, href: 'https://youtube.com' },
-              ].map((s, i) => (
+                { icon: <FiFacebook />, href: settings?.social_facebook, name: 'Facebook' },
+                { icon: <FiInstagram />, href: settings?.social_instagram, name: 'Instagram' },
+                { icon: <FiTwitter />, href: settings?.social_twitter, name: 'Twitter' },
+                { icon: <FiLinkedin />, href: settings?.social_linkedin, name: 'LinkedIn' },
+                { icon: <FiYoutube />, href: settings?.social_youtube, name: 'YouTube' },
+              ]
+              .filter((s) => s.href && s.href.trim() !== '')
+              .map((s, i) => (
                 <a
                   key={i}
                   href={s.href}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="w-9 h-9 bg-gray-800 hover:bg-primary-600 text-gray-400 hover:text-white rounded-lg flex items-center justify-center transition-all duration-200"
-                  aria-label={`Social link ${i}`}
+                  aria-label={`Visit our ${s.name}`}
                 >
                   {s.icon}
                 </a>
@@ -136,7 +138,7 @@ const Footer = () => {
             <div className="space-y-3 mb-6">
               <div className="flex items-start gap-3">
                 <FiMapPin className="w-4 h-4 text-primary-400 mt-0.5 shrink-0" />
-                <span className="text-sm text-gray-400">{settings?.org_address || '123 Community Lane, Hope District, City 10001'}</span>
+                <span className="text-sm text-gray-400">{settings?.org_address || 'Ontario, Canada'}</span>
               </div>
               <div className="flex items-center gap-3">
                 <FiPhone className="w-4 h-4 text-primary-400 shrink-0" />
@@ -181,7 +183,7 @@ const Footer = () => {
       <div className="border-t border-gray-800">
         <div className="container-custom py-5 flex flex-col sm:flex-row items-center justify-between gap-3">
           <p className="text-xs text-gray-500">
-            © {new Date().getFullYear()} Anpuneri. All rights reserved.
+            © {new Date().getFullYear()} {settings?.org_name || 'Anpuneri Humanitarian Relief Org'}. All rights reserved.
           </p>
           <div className="flex gap-4">
             <Link to="/privacy" className="text-xs text-gray-500 hover:text-white transition-colors">Privacy</Link>

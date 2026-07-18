@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useSelector } from 'react-redux';
 import { motion } from 'framer-motion';
 import { FiLinkedin, FiTwitter, FiMail } from 'react-icons/fi';
 import { teamService } from '../../services/apiServices';
@@ -61,11 +62,15 @@ const TeamCard = ({ member }) => (
 
 const TeamPage = () => {
   useScrollTop();
+  const { data: settings } = useSelector((s) => s.settings);
   const [team, setTeam] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    teamService.getAll().then((res) => setTeam(res.data.data || [])).finally(() => setLoading(false));
+    teamService.getAll().then((res) => {
+      // The API returns { data: { team: [...] } } inside the axios response
+      setTeam(res.data?.data?.team || []);
+    }).finally(() => setLoading(false));
   }, []);
 
   const leadership = team.filter((m) => m.department === 'leadership');
@@ -75,9 +80,9 @@ const TeamPage = () => {
     <div>
       <div className="page-header">
         <div className="container-custom text-center">
-          <h1 className="text-4xl md:text-5xl font-bold text-white font-heading mb-4">Our Team</h1>
+          <h1 className="text-4xl md:text-5xl font-bold text-white font-heading mb-4">{settings?.team_header_title || 'Our Team'}</h1>
           <p className="text-primary-200 text-lg max-w-2xl mx-auto">
-            Meet the dedicated individuals who give their expertise and passion to fulfil our mission every day.
+            {settings?.team_header_desc || 'Meet the dedicated individuals who give their expertise and passion to fulfil our mission every day.'}
           </p>
         </div>
       </div>
@@ -88,7 +93,11 @@ const TeamPage = () => {
         <>
           {leadership.length > 0 && (
             <SectionWrapper bg="white">
-              <SectionHeader eyebrow="Our Leaders" title="Leadership Team" subtitle="The visionaries who guide our strategy and drive our impact." />
+              <SectionHeader 
+                eyebrow={settings?.team_leadership_eyebrow || "Our Leaders"} 
+                title={settings?.team_leadership_title || "Leadership Team"} 
+                subtitle={settings?.team_leadership_subtitle || "The visionaries who guide our strategy and drive our impact."} 
+              />
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-4xl mx-auto">
                 {leadership.map((m) => <TeamCard key={m._id} member={m} />)}
               </div>
@@ -97,7 +106,11 @@ const TeamPage = () => {
 
           {others.length > 0 && (
             <SectionWrapper bg="gray">
-              <SectionHeader eyebrow="Our People" title="Program Team" subtitle="The talented staff who execute our programs and serve our communities." />
+              <SectionHeader 
+                eyebrow={settings?.team_program_eyebrow || "Our People"} 
+                title={settings?.team_program_title || "Program Team"} 
+                subtitle={settings?.team_program_subtitle || "The talented staff who execute our programs and serve our communities."} 
+              />
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {others.map((m) => <TeamCard key={m._id} member={m} />)}
               </div>

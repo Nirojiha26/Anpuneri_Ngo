@@ -46,7 +46,11 @@
   }
 
   .card {
-    @apply bg-white rounded-2xl shadow-card hover:shadow-card-hover transition-all duration-300;
+    @apply bg-white rounded-[24px] shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-gray-100 transition-all duration-300;
+  }
+
+  .glass-card {
+    @apply bg-white/70 backdrop-blur-xl border border-white/40 shadow-[0_8px_30px_rgb(0,0,0,0.04)] rounded-[24px] transition-all duration-300;
   }
 
   .input-field {
@@ -114,11 +118,11 @@
   }
 
   .admin-sidebar-link {
-    @apply flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all duration-200 text-gray-600 hover:bg-primary-50 hover:text-primary-700;
+    @apply flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all duration-200 text-gray-400 hover:text-white hover:bg-white/10;
   }
 
   .admin-sidebar-link.active {
-    @apply bg-primary-600 text-white shadow-sm;
+    @apply bg-gradient-to-r from-primary-600 to-primary-500 text-white shadow-lg shadow-primary-500/30;
   }
 
   .stat-card {

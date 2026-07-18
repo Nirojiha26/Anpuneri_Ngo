@@ -8,6 +8,7 @@ import {
 } from 'react-icons/fi';
 import { logout } from '../../redux/slices/authSlice';
 import { useClickOutside } from '../../hooks/useApi';
+import logo from '../../assets/images/logo.jpg';
 
 const NAV_ITEMS = [
   { label: 'Home', path: '/' },
@@ -67,6 +68,7 @@ const Navbar = () => {
       <div className="container-custom flex items-center justify-between">
         {/* Logo */}
         <Link to="/" className="flex items-center gap-2.5 group">
+          <img src={logo} alt="Anpuneri Logo" className="h-10 w-auto object-contain rounded-md" />
           <div>
             <span className="font-bold text-xl text-gray-900 font-heading leading-none block tracking-wide">
               Anpuneri

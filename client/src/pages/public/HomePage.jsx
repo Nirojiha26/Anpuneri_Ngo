@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import { motion } from 'framer-motion';
 import CountUp from 'react-countup';
 import {
@@ -11,48 +12,48 @@ import { CardGridSkeleton } from '../../components/common/Loading';
 import { formatDate, getImageUrl, truncate } from '../../utils/helpers';
 import { useInView } from '../../hooks/useApi';
 
-// ── Hero Slider ────────────────────────────────────────────────
-const HERO_SLIDES = [
-  {
-    image: 'https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?w=1600&q=80',
-    eyebrow: 'Together We Can',
-    title: 'Empowering Communities,\nTransforming Lives',
-    subtitle: 'We believe every child deserves education, every family deserves dignity, and every community deserves hope.',
-    cta: { label: 'Donate Now', path: '/donate' },
-    ctaSecondary: { label: 'Our Work', path: '/projects' },
-  },
-  {
-    image: 'https://images.unsplash.com/photo-1509062522246-3755977927d7?w=1600&q=80',
-    eyebrow: 'Education First',
-    title: 'Every Child Deserves\na Chance to Learn',
-    subtitle: 'From school supplies to full scholarships, we remove every barrier between a child and their education.',
-    cta: { label: 'See Projects', path: '/projects' },
-    ctaSecondary: { label: 'Volunteer', path: '/volunteer' },
-  },
-  {
-    image: 'https://images.unsplash.com/photo-1559027615-cd4628902d4a?w=1600&q=80',
-    eyebrow: 'Join Our Mission',
-    title: 'Hundreds of Volunteers,\nOne Purpose',
-    subtitle: 'Whether you give your time, skills, or resources — you become part of something bigger than yourself.',
-    cta: { label: 'Volunteer With Us', path: '/volunteer' },
-    ctaSecondary: { label: 'Learn More', path: '/about' },
-  },
-];
-
 const HeroSlider = () => {
+  const { data: settings } = useSelector((s) => s.settings);
   const [current, setCurrent] = useState(0);
 
-  useEffect(() => {
-    const timer = setInterval(() => setCurrent((c) => (c + 1) % HERO_SLIDES.length), 6000);
-    return () => clearInterval(timer);
-  }, []);
+  const slides = [
+    {
+      image: 'https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?w=1600&q=80',
+      eyebrow: 'Together We Can',
+      title: settings?.home_hero_title || 'Empowering Communities,\nTransforming Lives',
+      subtitle: settings?.home_hero_subtitle || 'We believe every child deserves education, every family deserves dignity, and every community deserves hope.',
+      cta: { label: 'Donate Now', path: '/donate' },
+      ctaSecondary: { label: 'Our Work', path: '/projects' },
+    },
+    {
+      image: 'https://images.unsplash.com/photo-1509062522246-3755977927d7?w=1600&q=80',
+      eyebrow: 'Education First',
+      title: 'Every Child Deserves\na Chance to Learn',
+      subtitle: 'From school supplies to full scholarships, we remove every barrier between a child and their education.',
+      cta: { label: 'See Projects', path: '/projects' },
+      ctaSecondary: { label: 'Volunteer', path: '/volunteer' },
+    },
+    {
+      image: 'https://images.unsplash.com/photo-1559027615-cd4628902d4a?w=1600&q=80',
+      eyebrow: 'Join Our Mission',
+      title: 'Hundreds of Volunteers,\nOne Purpose',
+      subtitle: 'Whether you give your time, skills, or resources — you become part of something bigger than yourself.',
+      cta: { label: 'Volunteer With Us', path: '/volunteer' },
+      ctaSecondary: { label: 'Learn More', path: '/about' },
+    },
+  ];
 
-  const slide = HERO_SLIDES[current];
+  useEffect(() => {
+    const timer = setInterval(() => setCurrent((c) => (c + 1) % slides.length), 6000);
+    return () => clearInterval(timer);
+  }, [slides.length]);
+
+  const slide = slides[current];
 
   return (
     <section className="relative h-[90vh] min-h-[600px] overflow-hidden">
       {/* Background */}
-      {HERO_SLIDES.map((s, i) => (
+      {slides.map((s, i) => (
         <motion.div
           key={i}
           className="absolute inset-0 bg-cover bg-center"
@@ -119,7 +120,7 @@ const HeroSlider = () => {
 
       {/* Slide indicators */}
       <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex gap-2">
-        {HERO_SLIDES.map((_, i) => (
+        {slides.map((_, i) => (
           <button
             key={i}
             onClick={() => setCurrent(i)}
@@ -131,13 +132,13 @@ const HeroSlider = () => {
 
       {/* Arrow controls */}
       <button
-        onClick={() => setCurrent((c) => (c - 1 + HERO_SLIDES.length) % HERO_SLIDES.length)}
+        onClick={() => setCurrent((c) => (c - 1 + slides.length) % slides.length)}
         className="absolute left-4 top-1/2 -translate-y-1/2 p-3 bg-white/10 hover:bg-white/20 backdrop-blur-sm text-white rounded-full transition-all"
       >
         <FiChevronLeft className="w-5 h-5" />
       </button>
       <button
-        onClick={() => setCurrent((c) => (c + 1) % HERO_SLIDES.length)}
+        onClick={() => setCurrent((c) => (c + 1) % slides.length)}
         className="absolute right-4 top-1/2 -translate-y-1/2 p-3 bg-white/10 hover:bg-white/20 backdrop-blur-sm text-white rounded-full transition-all"
       >
         <FiChevronRight className="w-5 h-5" />
@@ -294,6 +295,7 @@ const TestimonialCard = ({ testimonial }) => (
 
 // ── Main Page ────────────────────────────────────────────────
 const HomePage = () => {
+  const { data: settings } = useSelector((s) => s.settings);
   const [stats, setStats] = useState(null);
   const [projects, setProjects] = useState([]);
   const [events, setEvents] = useState([]);
@@ -341,13 +343,13 @@ const HomePage = () => {
           <div>
             <span className="text-sm font-semibold text-primary-600 uppercase tracking-widest">Our Purpose</span>
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mt-2 mb-5 font-heading">
-              We Exist to Lift People Out of Poverty Through Education
+              {settings?.home_mission_title || 'We Exist to Lift People Out of Poverty Through Education'}
             </h2>
             <p className="text-gray-600 mb-4 leading-relaxed">
-              Every day, children across our communities wake up facing a choice between eating and going to school. Families break under the weight of poverty, unable to give their children the future they deserve.
+              {settings?.home_mission_desc1 || 'Every day, children across our communities wake up facing a choice between eating and going to school. Families break under the weight of poverty, unable to give their children the future they deserve.'}
             </p>
             <p className="text-gray-600 mb-6 leading-relaxed">
-              We believe education is the most powerful lever for change. Through scholarships, school supplies, and community programs, we turn that lever for over 1,200 families every year.
+              {settings?.home_mission_desc2 || 'We believe education is the most powerful lever for change. Through scholarships, school supplies, and community programs, we turn that lever for over 1,200 families every year.'}
             </p>
             <div className="flex gap-4">
               <Link to="/about" className="btn-primary">

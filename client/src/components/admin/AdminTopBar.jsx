@@ -6,7 +6,7 @@ const AdminTopBar = ({ onMenuClick, title }) => {
   const { user } = useSelector((s) => s.auth);
 
   return (
-    <header className="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-4 md:px-6 sticky top-0 z-30">
+    <header className="h-20 bg-white/90 backdrop-blur-xl border-b border-gray-200 shadow-sm flex items-center justify-between px-4 md:px-8 sticky top-0 z-40 transition-all">
       <div className="flex items-center gap-3">
         <button
           onClick={onMenuClick}
@@ -24,10 +24,10 @@ const AdminTopBar = ({ onMenuClick, title }) => {
         <Link
           to="/"
           target="_blank"
-          className="hidden sm:flex items-center gap-1.5 text-xs font-medium text-gray-500 hover:text-primary-600 transition-colors px-3 py-1.5 rounded-lg hover:bg-gray-50"
+          className="hidden sm:flex items-center gap-2 text-sm font-bold text-white bg-primary-600 hover:bg-primary-700 transition-all px-5 py-2.5 rounded-xl shadow-md hover:shadow-lg shadow-primary-500/30"
         >
-          <FiExternalLink className="w-3.5 h-3.5" />
-          View Site
+          <FiExternalLink className="w-4 h-4" />
+          View Live Site
         </Link>
 
         <button className="relative p-2 rounded-lg hover:bg-gray-100 transition-colors">
@@ -35,13 +35,13 @@ const AdminTopBar = ({ onMenuClick, title }) => {
           <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full" />
         </button>
 
-        <div className="flex items-center gap-2 pl-2 border-l border-gray-200">
-          <div className="w-8 h-8 bg-primary-600 rounded-full flex items-center justify-center text-white text-xs font-bold">
-            {user?.name?.[0]?.toUpperCase() || 'A'}
+        <div className="flex items-center gap-3 pl-4 ml-2 border-l border-gray-200">
+          <div className="text-right hidden sm:block">
+            <p className="text-sm font-extrabold text-gray-900 leading-tight">{user?.name}</p>
+            <p className="text-[10px] font-bold text-primary-600 uppercase tracking-widest mt-0.5">{user?.role}</p>
           </div>
-          <div className="hidden sm:block">
-            <p className="text-sm font-medium text-gray-800 leading-none">{user?.name}</p>
-            <p className="text-xs text-gray-500 capitalize">{user?.role}</p>
+          <div className="w-11 h-11 bg-gradient-to-tr from-primary-600 to-indigo-500 rounded-full flex items-center justify-center text-white text-base font-bold shadow-md shadow-primary-500/30">
+            {user?.name?.[0]?.toUpperCase() || 'A'}
           </div>
         </div>
       </div>

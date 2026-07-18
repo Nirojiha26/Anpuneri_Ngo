@@ -67,19 +67,19 @@ const AdminSidebar = ({ isOpen, onClose }) => {
 
       {/* Sidebar */}
       <aside
-        className={`fixed top-0 left-0 h-full w-64 bg-gray-900 z-50 flex flex-col transition-transform duration-300 lg:translate-x-0 ${
+        className={`fixed top-0 left-0 h-full w-[280px] bg-slate-950 z-50 flex flex-col transition-transform duration-300 lg:translate-x-0 shadow-2xl border-r border-white/5 ${
           isOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
       >
         {/* Header */}
-        <div className="flex items-center justify-between px-5 py-5 border-b border-gray-800">
+        <div className="flex items-center justify-between px-6 py-6 border-b border-white/5">
           <div className="flex items-center gap-2.5">
             <div className="w-8 h-8 bg-primary-600 rounded-lg flex items-center justify-center">
               <FiHeart className="text-white w-4 h-4" />
             </div>
             <div>
               <p className="text-white font-bold text-sm">{settings?.org_name || 'Anpuneri'}</p>
-              <p className="text-xs text-gray-500">Admin Panel</p>
+              <p className="text-xs text-slate-400">Admin Panel</p>
             </div>
           </div>
           <button onClick={onClose} className="lg:hidden text-gray-500 hover:text-white p-1">
@@ -87,24 +87,12 @@ const AdminSidebar = ({ isOpen, onClose }) => {
           </button>
         </div>
 
-        {/* User Info */}
-        <div className="px-5 py-4 border-b border-gray-800">
-          <div className="flex items-center gap-3">
-            <div className="w-9 h-9 bg-primary-600 rounded-full flex items-center justify-center text-white font-bold text-sm">
-              {user?.name?.[0]?.toUpperCase() || 'A'}
-            </div>
-            <div className="min-w-0">
-              <p className="text-sm font-medium text-white truncate">{user?.name || 'Admin'}</p>
-              <p className="text-xs text-gray-500 truncate capitalize">{user?.role || 'admin'}</p>
-            </div>
-          </div>
-        </div>
 
         {/* Navigation */}
-        <nav className="flex-1 overflow-y-auto py-4 px-3 space-y-1">
+        <nav className="flex-1 overflow-y-auto py-6 px-4 space-y-1">
           {NAV_SECTIONS.map((section) => (
-            <div key={section.label} className="mb-4">
-              <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider px-2 mb-2">
+            <div key={section.label} className="mb-6">
+              <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest px-3 mb-3">
                 {section.label}
               </p>
               {section.items.map((item) => (
@@ -126,7 +114,7 @@ const AdminSidebar = ({ isOpen, onClose }) => {
         </nav>
 
         {/* Footer */}
-        <div className="p-3 border-t border-gray-800">
+        <div className="p-4 border-t border-white/5">
           <button
             onClick={handleLogout}
             className="admin-sidebar-link w-full text-red-400 hover:bg-red-900/30 hover:text-red-400"

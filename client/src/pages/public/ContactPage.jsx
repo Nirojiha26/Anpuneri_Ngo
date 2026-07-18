@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useSelector } from 'react-redux';
 import { useForm } from 'react-hook-form';
 import { motion } from 'framer-motion';
 import { FiMapPin, FiPhone, FiMail, FiClock, FiCheck, FiSend } from 'react-icons/fi';
@@ -9,6 +10,7 @@ import { useScrollTop } from '../../hooks/useApi';
 
 const ContactPage = () => {
   useScrollTop();
+  const { data: settings } = useSelector((s) => s.settings);
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
   const { register, handleSubmit, formState: { errors }, reset } = useForm();
@@ -27,9 +29,9 @@ const ContactPage = () => {
   };
 
   const contactInfo = [
-    { icon: <FiMapPin />, label: 'Address', value: '123 Community Lane, Hope District, City 10001' },
-    { icon: <FiPhone />, label: 'Phone', value: '+1 (555) 123-4567', href: 'tel:+15551234567' },
-    { icon: <FiMail />, label: 'Email', value: 'info@ngo.org', href: 'mailto:info@ngo.org' },
+    { icon: <FiMapPin />, label: 'Address', value: settings?.org_address || 'Ontario, Canada' },
+    { icon: <FiPhone />, label: 'Phone', value: settings?.org_phone || '+1 (555) 123-4567', href: `tel:${settings?.org_phone || '+15551234567'}` },
+    { icon: <FiMail />, label: 'Email', value: settings?.org_email || 'info@anpuneri.org', href: `mailto:${settings?.org_email || 'info@anpuneri.org'}` },
     { icon: <FiClock />, label: 'Office Hours', value: 'Mon–Fri: 9AM–5PM' },
   ];
 
@@ -37,9 +39,9 @@ const ContactPage = () => {
     <div>
       <div className="page-header">
         <div className="container-custom text-center">
-          <h1 className="text-4xl md:text-5xl font-bold text-white font-heading mb-4">Contact Us</h1>
+          <h1 className="text-4xl md:text-5xl font-bold text-white font-heading mb-4">{settings?.contact_header_title || 'Contact Us'}</h1>
           <p className="text-primary-200 text-lg max-w-2xl mx-auto">
-            We'd love to hear from you. Whether you have a question, partnership inquiry, or just want to connect — reach out.
+            {settings?.contact_header_desc || "We'd love to hear from you. Whether you have a question, partnership inquiry, or just want to connect — reach out."}
           </p>
         </div>
       </div>
@@ -49,8 +51,8 @@ const ContactPage = () => {
           {/* Contact Info */}
           <div className="lg:col-span-2 space-y-6">
             <div>
-              <h2 className="text-2xl font-bold text-gray-900 mb-2 font-heading">Get in Touch</h2>
-              <p className="text-gray-600">We respond to all messages within 1–2 business days.</p>
+              <h2 className="text-2xl font-bold text-gray-900 mb-2 font-heading">{settings?.contact_section_title || 'Get in Touch'}</h2>
+              <p className="text-gray-600">{settings?.contact_section_desc || 'We respond to all messages within 1–2 business days.'}</p>
             </div>
 
             <div className="space-y-4">
@@ -77,8 +79,7 @@ const ContactPage = () => {
             <div className="rounded-2xl overflow-hidden bg-gray-100 h-52 flex items-center justify-center">
               <div className="text-center text-gray-400">
                 <FiMapPin className="w-8 h-8 mx-auto mb-2" />
-                <p className="text-sm">123 Community Lane</p>
-                <p className="text-xs">Hope District, City 10001</p>
+                <p className="text-sm font-medium">{settings?.org_address || 'Ontario, Canada'}</p>
               </div>
             </div>
           </div>

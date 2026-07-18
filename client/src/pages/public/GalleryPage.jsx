@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useSelector } from 'react-redux';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FiX, FiImage } from 'react-icons/fi';
 import { galleryService } from '../../services/apiServices';
@@ -8,6 +9,7 @@ import { GALLERY_CATEGORIES } from '../../constants';
 import { useScrollTop } from '../../hooks/useApi';
 
 const GalleryPage = () => {
+  const { data: settings } = useSelector((s) => s.settings);
   useScrollTop();
   const [images, setImages] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -37,9 +39,11 @@ const GalleryPage = () => {
     <div>
       <div className="page-header">
         <div className="container-custom text-center">
-          <h1 className="text-4xl md:text-5xl font-bold text-white font-heading mb-4">Photo Gallery</h1>
+          <h1 className="text-4xl md:text-5xl font-bold text-white font-heading mb-4">
+            {settings?.gallery_title || 'Photo Gallery'}
+          </h1>
           <p className="text-primary-200 text-lg max-w-2xl mx-auto">
-            A visual journey through our programs, events, and the communities we serve.
+            {settings?.gallery_subtitle || 'A visual journey through our programs, events, and the communities we serve.'}
           </p>
         </div>
       </div>

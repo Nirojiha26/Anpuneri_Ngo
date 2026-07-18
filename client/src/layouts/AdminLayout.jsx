@@ -23,7 +23,7 @@ const AdminLayout = () => {
       <AdminSidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 
       {/* Main content */}
-      <div className="flex-1 lg:ml-64 flex flex-col min-h-screen">
+      <div className="flex-1 lg:ml-[280px] flex flex-col min-h-screen">
         <AdminTopBar
           onMenuClick={() => setSidebarOpen(true)}
         />
