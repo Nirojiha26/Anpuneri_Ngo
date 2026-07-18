@@ -3,6 +3,7 @@ const router = express.Router();
 
 const { getProjects, getProject } = require('../controllers/projectController');
 const { getEvents, getEvent } = require('../controllers/eventController');
+const { registerForEvent } = require('../controllers/eventRegistrationController');
 const { getNews, getSingleNews } = require('../controllers/newsController');
 const { getGallery } = require('../controllers/galleryController');
 const { applyVolunteer } = require('../controllers/volunteerController');
@@ -27,6 +28,7 @@ router.get('/projects/:id', getProject);
 // Events
 router.get('/events', getEvents);
 router.get('/events/:id', getEvent);
+router.post('/events/:eventId/register', registerForEvent);
 
 // News
 router.get('/news', getNews);

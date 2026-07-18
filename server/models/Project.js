@@ -63,6 +63,10 @@ const projectSchema = new mongoose.Schema(
       type: String,
       trim: true,
     },
+    facebookUrl: {
+      type: String,
+      trim: true,
+    },
     tags: [{ type: String, trim: true }],
     isFeatured: {
       type: Boolean,

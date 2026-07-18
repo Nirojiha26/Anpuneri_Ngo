@@ -224,28 +224,7 @@ const DonatePage = () => {
               </div>
             </div>
 
-            {/* Trust Badges */}
-            <div className="card p-5">
-              <h4 className="font-semibold text-gray-900 mb-4 text-sm">Why Give to Us</h4>
-              <div className="space-y-3">
-                {[
-                  { icon: '✅', text: '100% of public donations fund programs' },
-                  { icon: '📊', text: 'Annual financial reports published' },
-                  { icon: '🔒', text: 'Secure & encrypted transactions' },
-                  { icon: '📧', text: 'Receipt sent to your email' },
-                  { icon: '🏆', text: 'Registered non-profit since 2010' },
-                ].map((item, i) => (
-                  <div key={i} className="flex items-center gap-2.5 text-sm text-gray-600">
-                    <span>{item.icon}</span> {item.text}
-                  </div>
-                ))}
-              </div>
-            </div>
 
-            <div className="text-center text-xs text-gray-400 flex items-center justify-center gap-1.5">
-              <FiLock className="w-3.5 h-3.5" />
-              Secured by 256-bit SSL encryption
-            </div>
           </div>
         </div>
       </div>

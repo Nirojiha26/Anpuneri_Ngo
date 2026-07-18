@@ -9,7 +9,7 @@ import Modal from '../../components/common/Modal';
 import { formatDate, formatCurrency } from '../../utils/helpers';
 
 // Reusable read-only admin list
-const AdminReadList = ({ title, icon, fetchFn, columns, statusOptions, updateStatusFn, getItemName }) => {
+const AdminReadList = ({ title, icon, fetchFn, columns, statusOptions, updateStatusFn, getItemName, renderDetails }) => {
   const [items, setItems] = useState([]);
   const [pagination, setPagination] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -101,9 +101,11 @@ const AdminReadList = ({ title, icon, fetchFn, columns, statusOptions, updateSta
       <Modal isOpen={viewModal.open} onClose={() => setViewModal({ open: false, item: null })} title={getItemName ? getItemName(viewModal.item) : 'Details'} size="md">
         {viewModal.item && (
           <div className="p-6">
-            <pre className="text-xs text-gray-600 whitespace-pre-wrap">
-              {JSON.stringify(viewModal.item, null, 2)}
-            </pre>
+            {renderDetails ? renderDetails(viewModal.item) : (
+              <pre className="text-xs text-gray-600 whitespace-pre-wrap">
+                {JSON.stringify(viewModal.item, null, 2)}
+              </pre>
+            )}
           </div>
         )}
       </Modal>
@@ -120,6 +122,46 @@ export const AdminDonations = () => (
     updateStatusFn={(id, data) => donationService.updateStatus(id, data)}
     getItemName={(d) => d?.donorName || 'Donation'}
     statusOptions={['completed', 'pending', 'failed', 'refunded']}
+    renderDetails={(d) => (
+      <div className="space-y-4">
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <p className="text-xs text-gray-400 uppercase tracking-wider">Donor</p>
+            <p className="text-sm font-medium text-gray-900">{d.isAnonymous ? 'Anonymous' : d.donorName}</p>
+          </div>
+          {!d.isAnonymous && (
+            <div>
+              <p className="text-xs text-gray-400 uppercase tracking-wider">Email Address</p>
+              <p className="text-sm font-medium text-gray-900">{d.donorEmail}</p>
+            </div>
+          )}
+          {d.donorPhone && !d.isAnonymous && (
+            <div>
+              <p className="text-xs text-gray-400 uppercase tracking-wider">Phone</p>
+              <p className="text-sm font-medium text-gray-900">{d.donorPhone}</p>
+            </div>
+          )}
+          <div>
+            <p className="text-xs text-gray-400 uppercase tracking-wider">Amount</p>
+            <p className="text-sm font-bold text-gray-900">{formatCurrency(d.amount)}</p>
+          </div>
+          <div>
+            <p className="text-xs text-gray-400 uppercase tracking-wider">Purpose</p>
+            <p className="text-sm font-medium text-gray-900 capitalize">{d.purpose}</p>
+          </div>
+          <div>
+            <p className="text-xs text-gray-400 uppercase tracking-wider">Transaction ID</p>
+            <p className="text-sm font-medium text-gray-900">{d.transactionId || 'N/A'}</p>
+          </div>
+        </div>
+        {d.message && (
+          <div className="pt-4 border-t border-gray-100">
+            <p className="text-xs text-gray-400 uppercase tracking-wider mb-2">Encouragement Message</p>
+            <p className="text-sm text-gray-700 whitespace-pre-wrap">{d.message}</p>
+          </div>
+        )}
+      </div>
+    )}
     columns={[
       { key: 'donor', label: 'Donor', render: (d) => (
         <div>
@@ -144,6 +186,30 @@ export const AdminVolunteers = () => (
     updateStatusFn={(id, data) => volunteerService.update(id, data)}
     getItemName={(v) => v?.name || 'Volunteer'}
     statusOptions={['pending', 'approved', 'rejected']}
+    renderDetails={(v) => (
+      <div className="space-y-4">
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <p className="text-xs text-gray-400 uppercase tracking-wider">Applicant Name</p>
+            <p className="text-sm font-medium text-gray-900">{v.name}</p>
+          </div>
+          <div>
+            <p className="text-xs text-gray-400 uppercase tracking-wider">Email Address</p>
+            <p className="text-sm font-medium text-gray-900">{v.email}</p>
+          </div>
+          <div>
+            <p className="text-xs text-gray-400 uppercase tracking-wider">Phone Number</p>
+            <p className="text-sm font-medium text-gray-900">{v.phone || '—'}</p>
+          </div>
+        </div>
+        {v.motivation && (
+          <div className="pt-4 border-t border-gray-100">
+            <p className="text-xs text-gray-400 uppercase tracking-wider mb-2">Motivation & Questions</p>
+            <p className="text-sm text-gray-700 whitespace-pre-wrap">{v.motivation}</p>
+          </div>
+        )}
+      </div>
+    )}
     columns={[
       { key: 'name', label: 'Name', render: (v) => (
         <div>
@@ -151,9 +217,7 @@ export const AdminVolunteers = () => (
           <p className="text-xs text-gray-400">{v.email}</p>
         </div>
       )},
-      { key: 'occupation', label: 'Occupation', render: (v) => <span className="text-sm text-gray-600">{v.occupation || '—'}</span> },
-      { key: 'city', label: 'City', render: (v) => <span className="text-sm text-gray-600">{v.city || '—'}</span> },
-      { key: 'availability', label: 'Availability', render: (v) => <span className="text-sm capitalize text-gray-600">{v.availability}</span> },
+      { key: 'phone', label: 'Phone', render: (v) => <span className="text-sm text-gray-600">{v.phone || '—'}</span> },
       { key: 'status', label: 'Status', render: (v) => <StatusBadge status={v.status} /> },
       { key: 'createdAt', label: 'Applied', render: (v) => <span className="text-xs text-gray-500">{formatDate(v.createdAt)}</span> },
     ]}
@@ -169,6 +233,38 @@ export const AdminContacts = () => (
     updateStatusFn={(id, data) => contactService.updateStatus(id, data)}
     getItemName={(c) => c?.subject || 'Message'}
     statusOptions={['new', 'read', 'replied', 'archived']}
+    renderDetails={(c) => (
+      <div className="space-y-4">
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <p className="text-xs text-gray-400 uppercase tracking-wider">From</p>
+            <p className="text-sm font-medium text-gray-900">{c.name}</p>
+          </div>
+          <div>
+            <p className="text-xs text-gray-400 uppercase tracking-wider">Email</p>
+            <p className="text-sm font-medium text-gray-900">{c.email}</p>
+          </div>
+          {c.phone && (
+            <div>
+              <p className="text-xs text-gray-400 uppercase tracking-wider">Phone</p>
+              <p className="text-sm font-medium text-gray-900">{c.phone}</p>
+            </div>
+          )}
+          <div>
+            <p className="text-xs text-gray-400 uppercase tracking-wider">Category</p>
+            <p className="text-sm font-medium text-gray-900 capitalize">{c.category}</p>
+          </div>
+        </div>
+        <div className="pt-4 border-t border-gray-100">
+          <p className="text-xs text-gray-400 uppercase tracking-wider mb-2">Subject</p>
+          <p className="text-sm font-semibold text-gray-900">{c.subject}</p>
+        </div>
+        <div className="bg-gray-50 p-4 rounded-xl">
+          <p className="text-xs text-gray-400 uppercase tracking-wider mb-2">Message</p>
+          <p className="text-sm text-gray-700 whitespace-pre-wrap">{c.message}</p>
+        </div>
+      </div>
+    )}
     columns={[
       { key: 'name', label: 'From', render: (c) => (
         <div>

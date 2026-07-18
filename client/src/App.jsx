@@ -10,7 +10,9 @@ import { PageLoader } from './components/common/Loading';
 import HomePage from './pages/public/HomePage';
 import AboutPage from './pages/public/AboutPage';
 import ProjectsPage from './pages/public/ProjectsPage';
+import ProjectDetailsPage from './pages/public/ProjectDetailsPage';
 import EventsPage from './pages/public/EventsPage';
+import EventDetailsPage from './pages/public/EventDetailsPage';
 import NewsPage from './pages/public/NewsPage';
 import GalleryPage from './pages/public/GalleryPage';
 import VolunteerPage from './pages/public/VolunteerPage';
@@ -26,6 +28,7 @@ import AdminDashboard from './pages/admin/AdminDashboard';
 import AdminProjects from './pages/admin/AdminProjects';
 import AdminSettings from './pages/admin/AdminSettings';
 import { AdminDonations, AdminVolunteers, AdminContacts } from './pages/admin/AdminCommunity';
+import { AdminEventRegistrations } from './pages/admin/AdminEventRegistrations';
 import {
   AdminEvents, AdminNews, AdminGallery, AdminTeam,
   AdminTestimonials, AdminFAQs, AdminStories, AdminUsers,
@@ -50,7 +53,9 @@ const App = () => {
             <Route path="vision" element={<VisionPage />} />
             <Route path="team" element={<TeamPage />} />
             <Route path="projects" element={<ProjectsPage />} />
+            <Route path="projects/:id" element={<ProjectDetailsPage />} />
             <Route path="events" element={<EventsPage />} />
+            <Route path="events/:id" element={<EventDetailsPage />} />
             <Route path="news" element={<NewsPage />} />
             <Route path="gallery" element={<GalleryPage />} />
             <Route path="volunteer" element={<VolunteerPage />} />
@@ -71,6 +76,7 @@ const App = () => {
             {/* Content */}
             <Route path="projects" element={<AdminProjects />} />
             <Route path="events" element={<AdminEvents />} />
+            <Route path="event-registrations" element={<AdminEventRegistrations />} />
             <Route path="news" element={<AdminNews />} />
             <Route path="gallery" element={<AdminGallery />} />
             <Route path="stories" element={<AdminStories />} />

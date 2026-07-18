@@ -15,70 +15,91 @@ const ProjectCard = ({ project }) => (
     initial={{ opacity: 0, y: 20 }}
     animate={{ opacity: 1, y: 0 }}
     whileHover={{ y: -4 }}
-    className="card overflow-hidden group"
+    className="card overflow-hidden group flex flex-col"
   >
-    <div className="relative h-52 overflow-hidden">
+    <div className="relative h-56 overflow-hidden shrink-0">
       <img
         src={getImageUrl(project.image)}
         alt={project.title}
         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
         loading="lazy"
       />
-      <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
+      <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-black/20" />
       <div className="absolute top-3 left-3 flex gap-2">
-        <span className="badge-primary capitalize">{project.category}</span>
-        {project.status === 'completed' && <span className="badge bg-green-100 text-green-700 border border-green-200">Completed</span>}
+        <span className="badge-primary capitalize bg-primary-600 border-none">{project.category}</span>
+        {project.status === 'completed' && <span className="badge bg-green-500 text-white border-none">Completed</span>}
       </div>
       {project.isFeatured && (
         <div className="absolute top-3 right-3">
-          <span className="badge bg-accent-500 text-white text-xs px-2 py-0.5">Featured</span>
+          <span className="badge bg-accent-500 text-white text-xs px-2 py-0.5 border-none">Featured</span>
         </div>
       )}
     </div>
 
-    <div className="p-5">
+    <div className="p-5 flex flex-col flex-1">
       <h3 className="font-bold text-gray-900 mb-2 line-clamp-2 group-hover:text-primary-600 transition-colors text-lg">
         {project.title}
       </h3>
-      <p className="text-sm text-gray-500 mb-4 line-clamp-2">{project.shortDescription || project.description?.slice(0, 120)}</p>
+      <p className="text-sm text-gray-600 mb-5 line-clamp-3 leading-relaxed">
+        {project.shortDescription || project.description?.slice(0, 150) + '...'}
+      </p>
 
       {/* Stats row */}
-      <div className="flex gap-4 mb-4 text-xs text-gray-500">
+      <div className="flex flex-wrap gap-x-4 gap-y-2 mb-5 text-xs font-medium text-gray-500">
         {project.beneficiaries > 0 && (
-          <span className="flex items-center gap-1">
-            👥 {project.beneficiaries.toLocaleString()} beneficiaries
+          <span className="flex items-center gap-1.5">
+            <span className="text-primary-600">👥</span> {project.beneficiaries.toLocaleString()} beneficiaries
           </span>
         )}
         {project.location && (
-          <span className="flex items-center gap-1">📍 {project.location}</span>
+          <span className="flex items-center gap-1.5">
+            <span className="text-red-500">📍</span> {project.location}
+          </span>
         )}
       </div>
 
-      {/* Progress */}
-      {project.targetAmount > 0 && (
-        <div className="mb-4">
-          <div className="flex justify-between text-xs text-gray-500 mb-1.5">
-            <span>${(project.raisedAmount || 0).toLocaleString()} raised</span>
-            <span className="font-semibold">{getProgress(project.raisedAmount, project.targetAmount)}% of ${project.targetAmount.toLocaleString()}</span>
+      <div className="mt-auto">
+        {/* Progress */}
+        {project.targetAmount > 0 && (
+          <div className="mb-5">
+            <div className="flex justify-between text-xs text-gray-600 mb-2 font-medium">
+              <span>${(project.raisedAmount || 0).toLocaleString()} raised</span>
+              <span className="text-primary-700">{getProgress(project.raisedAmount, project.targetAmount)}% of ${project.targetAmount.toLocaleString()}</span>
+            </div>
+            <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
+              <motion.div
+                className="h-full bg-gradient-to-r from-primary-500 to-primary-600 rounded-full"
+                initial={{ width: 0 }}
+                whileInView={{ width: `${getProgress(project.raisedAmount, project.targetAmount)}%` }}
+                viewport={{ once: true }}
+                transition={{ duration: 1, ease: 'easeOut' }}
+              />
+            </div>
           </div>
-          <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
-            <motion.div
-              className="h-full bg-gradient-to-r from-primary-500 to-primary-700 rounded-full"
-              initial={{ width: 0 }}
-              whileInView={{ width: `${getProgress(project.raisedAmount, project.targetAmount)}%` }}
-              viewport={{ once: true }}
-              transition={{ duration: 1, ease: 'easeOut' }}
-            />
-          </div>
-        </div>
-      )}
+        )}
 
-      <Link
-        to={`/projects/${project._id}`}
-        className="text-sm font-semibold text-primary-600 hover:text-primary-700 flex items-center gap-1 group/link"
-      >
-        Read more <FiArrowRight className="w-3.5 h-3.5 group-hover/link:translate-x-1 transition-transform" />
-      </Link>
+        <div className="flex items-center justify-between pt-4 border-t border-gray-100">
+          <Link
+            to={`/projects/${project.slug || project._id}`}
+            className="text-sm font-bold text-primary-600 hover:text-primary-700 flex items-center gap-1.5 group/link"
+          >
+            Read full story <FiArrowRight className="w-4 h-4 group-hover/link:translate-x-1 transition-transform" />
+          </Link>
+          {project.facebookUrl && (
+            <a 
+              href={project.facebookUrl} 
+              target="_blank" 
+              rel="noreferrer"
+              className="text-blue-600 hover:text-blue-800 bg-blue-50 px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 transition-colors"
+            >
+              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path fillRule="evenodd" d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z" clipRule="evenodd" />
+              </svg>
+              FB Post
+            </a>
+          )}
+        </div>
+      </div>
     </div>
   </motion.div>
 );

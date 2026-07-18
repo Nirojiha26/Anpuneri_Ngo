@@ -24,11 +24,13 @@ export const projectService = {
 export const eventService = {
   getAll: (params) => api.get('/events', { params }),
   getOne: (id) => api.get(`/events/${id}`),
+  register: (id, data) => api.post(`/events/${id}/register`, data),
   // Admin
   adminGetAll: (params) => api.get('/admin/events', { params }),
   create: (data) => api.post('/admin/events', data, { headers: { 'Content-Type': 'multipart/form-data' } }),
   update: (id, data) => api.put(`/admin/events/${id}`, data, { headers: { 'Content-Type': 'multipart/form-data' } }),
   delete: (id) => api.delete(`/admin/events/${id}`),
+  adminGetRegistrations: (params) => api.get('/admin/event-registrations', { params }),
 };
 
 // ── News ──────────────────────────────────────────────────────

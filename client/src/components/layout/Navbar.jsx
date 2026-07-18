@@ -67,8 +67,14 @@ const Navbar = () => {
     >
       <div className="container-custom flex items-center justify-between">
         {/* Logo */}
-        <Link to="/" className="flex items-center gap-2.5 group">
-          <img src={logo} alt="Anpuneri Logo" className="h-10 w-auto object-contain rounded-md" />
+        <Link to="/" className="flex items-center gap-3 group">
+          <div className="relative w-16 h-10 flex items-center justify-center">
+            <img 
+              src={logo} 
+              alt="Anpuneri Logo" 
+              className="absolute h-[70px] w-auto max-w-none object-contain mix-blend-multiply" 
+            />
+          </div>
           <div>
             <span className="font-bold text-xl text-gray-900 font-heading leading-none block tracking-wide">
               Anpuneri

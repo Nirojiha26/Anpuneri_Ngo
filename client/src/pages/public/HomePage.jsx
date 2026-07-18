@@ -26,7 +26,7 @@ const HeroSlider = () => {
       ctaSecondary: { label: 'Our Work', path: '/projects' },
     },
     {
-      image: 'https://images.unsplash.com/photo-1509062522246-3755977927d7?w=1600&q=80',
+      image: 'https://images.unsplash.com/photo-1542810634-71277d95dcbb?w=1600&q=80',
       eyebrow: 'Education First',
       title: 'Every Child Deserves\na Chance to Learn',
       subtitle: 'From school supplies to full scholarships, we remove every barrier between a child and their education.',
@@ -34,7 +34,7 @@ const HeroSlider = () => {
       ctaSecondary: { label: 'Volunteer', path: '/volunteer' },
     },
     {
-      image: 'https://images.unsplash.com/photo-1559027615-cd4628902d4a?w=1600&q=80',
+      image: 'https://images.unsplash.com/photo-1593113580332-628d5bb5ce8a?w=1600&q=80',
       eyebrow: 'Join Our Mission',
       title: 'Hundreds of Volunteers,\nOne Purpose',
       subtitle: 'Whether you give your time, skills, or resources — you become part of something bigger than yourself.',
@@ -51,31 +51,32 @@ const HeroSlider = () => {
   const slide = slides[current];
 
   return (
-    <section className="relative h-[90vh] min-h-[600px] overflow-hidden">
-      {/* Background */}
+    <section className="relative h-[90vh] min-h-[600px] overflow-hidden bg-gray-900">
+      {/* Background Images */}
       {slides.map((s, i) => (
         <motion.div
           key={i}
           className="absolute inset-0 bg-cover bg-center"
           style={{ backgroundImage: `url(${s.image})` }}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: i === current ? 1 : 0 }}
-          transition={{ duration: 1 }}
+          initial={{ opacity: 0, scale: 1.05 }}
+          animate={{ opacity: i === current ? 1 : 0, scale: i === current ? 1 : 1.05 }}
+          transition={{ duration: 1.2, ease: 'easeOut' }}
         />
       ))}
 
-      {/* Gradient overlay */}
-      <div className="absolute inset-0 bg-gradient-to-r from-gray-900/85 via-gray-900/60 to-gray-900/30" />
-      <div className="absolute inset-0 bg-hero-pattern" />
+      {/* Modern Smooth Gradient Overlay (Removed noisy pattern) */}
+      <div className="absolute inset-0 bg-gradient-to-r from-gray-900/90 via-gray-900/50 to-transparent" />
+      <div className="absolute inset-0 bg-gradient-to-t from-gray-900/80 via-transparent to-transparent" />
 
       {/* Content */}
-      <div className="relative container-custom h-full flex items-center">
+      <div className="relative container-custom h-full flex items-center z-10">
         <div className="max-w-2xl">
           <motion.span
             key={`eyebrow-${current}`}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="inline-block text-accent-400 text-sm font-semibold uppercase tracking-widest mb-4"
+            transition={{ duration: 0.6, ease: 'easeOut' }}
+            className="inline-block text-accent-400 text-sm font-semibold uppercase tracking-widest mb-4 drop-shadow-md"
           >
             {slide.eyebrow}
           </motion.span>
@@ -84,8 +85,8 @@ const HeroSlider = () => {
             key={`title-${current}`}
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
-            className="text-4xl md:text-5xl lg:text-6xl font-bold text-white font-heading leading-tight mb-6"
+            transition={{ delay: 0.1, duration: 0.6, ease: 'easeOut' }}
+            className="text-4xl md:text-5xl lg:text-7xl font-bold text-white font-heading leading-[1.1] mb-6 drop-shadow-lg"
             style={{ whiteSpace: 'pre-line' }}
           >
             {slide.title}
@@ -95,8 +96,8 @@ const HeroSlider = () => {
             key={`subtitle-${current}`}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-            className="text-lg text-gray-300 mb-8 leading-relaxed"
+            transition={{ delay: 0.2, duration: 0.6, ease: 'easeOut' }}
+            className="text-lg md:text-xl text-gray-200 mb-8 leading-relaxed drop-shadow-md max-w-xl"
           >
             {slide.subtitle}
           </motion.p>
@@ -105,26 +106,26 @@ const HeroSlider = () => {
             key={`cta-${current}`}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3 }}
+            transition={{ delay: 0.3, duration: 0.6, ease: 'easeOut' }}
             className="flex flex-wrap gap-4"
           >
-            <Link to={slide.cta.path} className="btn-accent">
-              <FiHeart className="w-4 h-4" /> {slide.cta.label}
+            <Link to={slide.cta.path} className="btn-accent px-8 py-3.5 text-base shadow-xl shadow-accent-600/30">
+              <FiHeart className="w-5 h-5" /> {slide.cta.label}
             </Link>
-            <Link to={slide.ctaSecondary.path} className="btn-outline border-white text-white hover:bg-white hover:text-gray-900">
-              {slide.ctaSecondary.label} <FiArrowRight className="w-4 h-4" />
+            <Link to={slide.ctaSecondary.path} className="btn-outline px-8 py-3.5 text-base border-2 border-white text-white hover:bg-white hover:text-gray-900 transition-colors">
+              {slide.ctaSecondary.label} <FiArrowRight className="w-5 h-5" />
             </Link>
           </motion.div>
         </div>
       </div>
 
       {/* Slide indicators */}
-      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex gap-2">
+      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex gap-3 z-20">
         {slides.map((_, i) => (
           <button
             key={i}
             onClick={() => setCurrent(i)}
-            className={`transition-all duration-300 rounded-full ${i === current ? 'w-8 h-2.5 bg-white' : 'w-2.5 h-2.5 bg-white/40 hover:bg-white/70'}`}
+            className={`transition-all duration-300 rounded-full shadow-sm ${i === current ? 'w-10 h-2 bg-white' : 'w-2 h-2 bg-white/50 hover:bg-white/80'}`}
             aria-label={`Slide ${i + 1}`}
           />
         ))}
@@ -133,15 +134,15 @@ const HeroSlider = () => {
       {/* Arrow controls */}
       <button
         onClick={() => setCurrent((c) => (c - 1 + slides.length) % slides.length)}
-        className="absolute left-4 top-1/2 -translate-y-1/2 p-3 bg-white/10 hover:bg-white/20 backdrop-blur-sm text-white rounded-full transition-all"
+        className="absolute left-4 top-1/2 -translate-y-1/2 p-3 bg-black/20 hover:bg-black/40 backdrop-blur-md text-white rounded-full transition-all z-20"
       >
-        <FiChevronLeft className="w-5 h-5" />
+        <FiChevronLeft className="w-6 h-6" />
       </button>
       <button
         onClick={() => setCurrent((c) => (c + 1) % slides.length)}
-        className="absolute right-4 top-1/2 -translate-y-1/2 p-3 bg-white/10 hover:bg-white/20 backdrop-blur-sm text-white rounded-full transition-all"
+        className="absolute right-4 top-1/2 -translate-y-1/2 p-3 bg-black/20 hover:bg-black/40 backdrop-blur-md text-white rounded-full transition-all z-20"
       >
-        <FiChevronRight className="w-5 h-5" />
+        <FiChevronRight className="w-6 h-6" />
       </button>
     </section>
   );
@@ -161,7 +162,7 @@ const StatsSection = ({ stats }) => {
   return (
     <section className="bg-primary-700 py-14" ref={ref}>
       <div className="container-custom">
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
           {items.map((item, i) => (
             <motion.div
               key={i}
@@ -360,7 +361,7 @@ const HomePage = () => {
               </Link>
             </div>
           </div>
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <img
               src="https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=600"
               alt="Students learning"
@@ -499,7 +500,7 @@ const HomePage = () => {
             title="Photo Gallery"
             subtitle="A glimpse into the lives we're changing and the communities we serve."
           />
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
             {gallery.slice(0, 8).map((img, i) => (
               <motion.div
                 key={img._id || i}

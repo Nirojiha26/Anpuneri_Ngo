@@ -33,8 +33,11 @@ const FileInput = ({ id, label, currentUrl }) => (
 
 const appendFormData = (data, excludeKeys = []) => {
   const fd = new FormData();
+  const autoExclude = ['_id', '__v', 'createdAt', 'updatedAt', 'createdBy', 'image', 'avatar', 'gallery', 'slug', 'author'];
   Object.entries(data).forEach(([k, v]) => {
-    if (!excludeKeys.includes(k) && v !== '' && v !== undefined && v !== null) fd.append(k, v);
+    if (!autoExclude.includes(k) && !excludeKeys.includes(k) && v !== '' && v !== undefined && v !== null && !Number.isNaN(v)) {
+      fd.append(k, typeof v === 'object' ? JSON.stringify(v) : v);
+    }
   });
   return fd;
 };
@@ -51,7 +54,7 @@ const SaveButtons = ({ onClose, loading, label }) => (
 const EventForm = ({ item, onClose }) => {
   const [loading, setLoading] = useState(false);
   const { register, handleSubmit, formState: { errors } } = useForm({
-    defaultValues: item || { status: 'upcoming', category: 'fundraiser', isFree: true },
+    defaultValues: item || { status: 'upcoming', visibility: 'published', category: 'fundraiser', isFree: true },
   });
 
   const onSubmit = async (data) => {
@@ -82,6 +85,11 @@ const EventForm = ({ item, onClose }) => {
           { value: 'completed', label: 'Completed' },
           { value: 'cancelled', label: 'Cancelled' },
         ]} {...register('status')} />
+        <Select label="Visibility" options={[
+          { value: 'published', label: 'Published' },
+          { value: 'draft', label: 'Draft' },
+          { value: 'hidden', label: 'Hidden' },
+        ]} {...register('visibility')} />
         <Input label="Start Date" type="date" required error={errors.startDate?.message}
           {...register('startDate', { required: 'Required' })} />
         <Input label="Start Time" type="text" placeholder="e.g. 9:00 AM" {...register('startTime')} />
@@ -132,6 +140,7 @@ export const AdminEvents = () => (
       { key: 'startDate', label: 'Date', render: (e) => <span className="text-sm text-gray-600">{formatDate(e.startDate)}</span> },
       { key: 'venue', label: 'Venue', render: (e) => <span className="text-sm text-gray-600 line-clamp-1">{e.venue || '—'}</span> },
       { key: 'status', label: 'Status', render: (e) => <StatusBadge status={e.status} /> },
+      { key: 'visibility', label: 'Visibility', render: (e) => <StatusBadge status={e.visibility} /> },
       { key: 'fee', label: 'Fee', render: (e) => <span className="text-sm text-gray-600">{e.isFree ? 'Free' : `$${e.ticketPrice}`}</span> },
     ]}
     renderForm={({ item, onClose }) => <EventForm item={item} onClose={onClose} />}

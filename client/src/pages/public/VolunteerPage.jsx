@@ -141,63 +141,6 @@ const VolunteerPage = () => {
                   error={errors.phone?.message}
                   {...register('phone', { required: 'Phone is required' })}
                 />
-                <Input
-                  label="City / Area" placeholder="Your city or neighborhood"
-                  {...register('city')}
-                />
-                <Input
-                  label="Occupation" placeholder="Your current job or student status"
-                  {...register('occupation')}
-                />
-                <Select
-                  label="Availability"
-                  options={VOLUNTEER_AVAILABILITY}
-                  {...register('availability')}
-                />
-              </div>
-            </div>
-
-            {/* Skills */}
-            <div>
-              <h3 className="font-semibold text-gray-900 mb-4 pb-2 border-b border-gray-100">Skills & Expertise</h3>
-              <p className="text-sm text-gray-500 mb-3">Select all that apply:</p>
-              <div className="flex flex-wrap gap-2">
-                {SKILL_OPTIONS.map((skill) => (
-                  <button
-                    key={skill}
-                    type="button"
-                    onClick={() => toggleSkill(skill)}
-                    className={`px-3 py-1.5 rounded-lg text-sm border-2 transition-all ${
-                      selectedSkills.includes(skill)
-                        ? 'bg-primary-600 text-white border-primary-600'
-                        : 'border-gray-200 text-gray-600 hover:border-primary-300'
-                    }`}
-                  >
-                    {skill}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* Interests */}
-            <div>
-              <h3 className="font-semibold text-gray-900 mb-4 pb-2 border-b border-gray-100">Areas of Interest</h3>
-              <p className="text-sm text-gray-500 mb-3">Where would you like to contribute?</p>
-              <div className="flex flex-wrap gap-2">
-                {INTEREST_OPTIONS.map((interest) => (
-                  <button
-                    key={interest}
-                    type="button"
-                    onClick={() => toggleInterest(interest)}
-                    className={`px-3 py-1.5 rounded-lg text-sm border-2 transition-all ${
-                      selectedInterests.includes(interest)
-                        ? 'bg-secondary-600 text-white border-secondary-600'
-                        : 'border-gray-200 text-gray-600 hover:border-secondary-300'
-                    }`}
-                  >
-                    {interest}
-                  </button>
-                ))}
               </div>
             </div>
 
@@ -206,26 +149,12 @@ const VolunteerPage = () => {
               <h3 className="font-semibold text-gray-900 mb-4 pb-2 border-b border-gray-100">About You</h3>
               <div className="space-y-4">
                 <Textarea
-                  label="Why do you want to volunteer with us?"
+                  label="Why do you want to volunteer with us? / Any questions?"
                   required
                   placeholder="Tell us what motivates you to give back..."
                   rows={4}
                   error={errors.motivation?.message}
                   {...register('motivation', { required: 'Please tell us your motivation' })}
-                />
-                <Textarea
-                  label="Relevant Experience (Optional)"
-                  placeholder="Share any previous volunteer or relevant professional experience..."
-                  rows={3}
-                  {...register('experience')}
-                />
-                <Input
-                  label="Hours per week you can volunteer"
-                  type="number"
-                  placeholder="e.g. 4"
-                  min={1}
-                  max={40}
-                  {...register('hoursPerWeek', { valueAsNumber: true })}
                 />
               </div>
             </div>

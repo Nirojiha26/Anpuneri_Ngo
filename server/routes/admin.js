@@ -8,6 +8,7 @@ const { uploadLimiter: uploadLimit } = require('../middlewares/rateLimiter');
 // Controllers
 const { adminGetProjects, createProject, updateProject, deleteProject } = require('../controllers/projectController');
 const { adminGetEvents, createEvent, updateEvent, deleteEvent } = require('../controllers/eventController');
+const { adminGetRegistrations } = require('../controllers/eventRegistrationController');
 const { adminGetNews, createNews, updateNews, deleteNews } = require('../controllers/newsController');
 const { adminGetGallery, uploadImage, updateImage, deleteImage } = require('../controllers/galleryController');
 const { adminGetVolunteers, getVolunteer, updateVolunteer, deleteVolunteer } = require('../controllers/volunteerController');
@@ -41,6 +42,7 @@ router.get('/events', adminGetEvents);
 router.post('/events', upload.single('image'), createEvent);
 router.put('/events/:id', upload.single('image'), updateEvent);
 router.delete('/events/:id', authorize('admin'), deleteEvent);
+router.get('/event-registrations', adminGetRegistrations);
 
 // News
 router.get('/news', adminGetNews);
