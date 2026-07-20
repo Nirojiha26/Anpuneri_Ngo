@@ -26,6 +26,7 @@ import { MissionPage, VisionPage, NotFoundPage, PrivacyPage, TermsPage } from '.
 import AdminLoginPage from './pages/admin/AdminLoginPage';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import AdminProjects from './pages/admin/AdminProjects';
+import AdminSliders from './pages/admin/AdminSliders';
 import AdminSettings from './pages/admin/AdminSettings';
 import { AdminDonations, AdminVolunteers, AdminContacts } from './pages/admin/AdminCommunity';
 import { AdminEventRegistrations } from './pages/admin/AdminEventRegistrations';
@@ -74,6 +75,7 @@ const App = () => {
           <Route path="/admin" element={<AdminLayout />}>
             <Route index element={<AdminDashboard />} />
             {/* Content */}
+            <Route path="sliders" element={<AdminSliders />} />
             <Route path="projects" element={<AdminProjects />} />
             <Route path="events" element={<AdminEvents />} />
             <Route path="event-registrations" element={<AdminEventRegistrations />} />

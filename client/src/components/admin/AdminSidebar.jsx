@@ -17,6 +17,7 @@ const NAV_SECTIONS = [
   {
     label: 'Content',
     items: [
+      { label: 'Sliders', path: '/admin/sliders', icon: <FiImage /> },
       { label: 'Projects', path: '/admin/projects', icon: <FiFolder /> },
       { label: 'Events', path: '/admin/events', icon: <FiCalendar /> },
       { label: 'Event Registrations', path: '/admin/event-registrations', icon: <FiUsers /> },

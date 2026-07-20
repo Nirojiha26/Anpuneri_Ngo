@@ -1,40 +1,48 @@
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useState } from "react";
+import { Link } from "react-router-dom";
 import {
-  FiHeart, FiFacebook, FiYoutube, FiMapPin, 
-  FiPhone, FiMail, FiSend, FiArrowRight,
-  FiInstagram, FiLinkedin, FiTwitter
-} from 'react-icons/fi';
-import { useSelector } from 'react-redux';
-import logo from '../../assets/images/logo.jpg';
+  FiHeart,
+  FiYoutube,
+  FiMapPin,
+  FiPhone,
+  FiMail,
+  FiSend,
+  FiArrowRight,
+  FiInstagram,
+  FiLinkedin,
+  FiTwitter,
+} from "react-icons/fi";
+import { FaFacebookF } from "react-icons/fa";
+import { useSelector } from "react-redux";
+import logo from "../../assets/images/logo.jpg";
 
 const Footer = () => {
   const { data: settings } = useSelector((s) => s.settings);
-  const [email, setEmail] = useState('');
+  const [email, setEmail] = useState("");
 
   const handleNewsletter = (e) => {
     e.preventDefault();
-    setEmail('');
+    setEmail("");
     // In production: call newsletter API
-    alert('Thank you for subscribing!');
+    alert("Thank you for subscribing!");
   };
 
   const quickLinks = [
-    { label: 'About Us', path: '/about' },
-    { label: 'Our Projects', path: '/projects' },
-    { label: 'Events', path: '/events' },
-    { label: 'Success Stories', path: '/stories' },
-    { label: 'Gallery', path: '/gallery' },
-    { label: 'News', path: '/news' },
+    { label: "About Us", path: "/about" },
+    { label: "Our Projects", path: "/projects" },
+    { label: "Events", path: "/events" },
+    { label: "Success Stories", path: "/stories" },
+    { label: "Gallery", path: "/gallery" },
+    { label: "News", path: "/news" },
   ];
 
   const supportLinks = [
-    { label: 'Volunteer', path: '/volunteer' },
-    { label: 'Donate', path: '/donate' },
-    { label: 'Contact Us', path: '/contact' },
-    { label: 'FAQs', path: '/faqs' },
-    { label: 'Privacy Policy', path: '/privacy' },
-    { label: 'Terms of Service', path: '/terms' },
+    { label: "Volunteer", path: "/volunteer" },
+    { label: "Donate", path: "/donate" },
+    { label: "Contact Us", path: "/contact" },
+    { label: "FAQs", path: "/faqs" },
+    { label: "Privacy Policy", path: "/privacy" },
+    { label: "Terms of Service", path: "/terms" },
   ];
 
   return (
@@ -43,14 +51,22 @@ const Footer = () => {
       <div className="bg-gradient-to-r from-primary-700 to-primary-900">
         <div className="container-custom py-10 flex flex-col md:flex-row items-center justify-between gap-6">
           <div>
-            <h3 className="text-white text-xl font-bold mb-1">{settings?.footer_cta_title || 'Ready to Make a Difference?'}</h3>
-            <p className="text-primary-200 text-sm">{settings?.footer_cta_desc || 'Join thousands of donors and volunteers changing lives every day.'}</p>
+            <h3 className="text-white text-xl font-bold mb-1">
+              {settings?.footer_cta_title || "Ready to Make a Difference?"}
+            </h3>
+            <p className="text-primary-200 text-sm">
+              {settings?.footer_cta_desc ||
+                "Join thousands of donors and volunteers changing lives every day."}
+            </p>
           </div>
           <div className="flex gap-3">
             <Link to="/donate" className="btn-accent text-sm">
               <FiHeart className="w-4 h-4" /> Donate Now
             </Link>
-            <Link to="/volunteer" className="btn-outline border-white text-white hover:bg-white hover:text-primary-700 text-sm">
+            <Link
+              to="/volunteer"
+              className="btn-outline border-white text-white hover:bg-white hover:text-primary-700 text-sm"
+            >
               Volunteer
             </Link>
           </div>
@@ -63,42 +79,81 @@ const Footer = () => {
           {/* Brand */}
           <div className="lg:col-span-1">
             <div className="flex items-center gap-2.5 mb-4">
-              <img src={logo} alt="Anpuneri Logo" className="h-10 w-auto object-contain rounded" />
+              <img
+                src={logo}
+                alt="Anpuneri Logo"
+                className="h-10 w-auto object-contain rounded"
+              />
               <div>
-                <span className="font-bold text-white text-lg font-heading">{settings?.org_name || 'Anpuneri Humanitarian Relief Org'}</span>
+                <span className="font-bold text-white text-lg font-heading">
+                  {settings?.org_name || "Anpuneri Humanitarian Relief Org"}
+                </span>
               </div>
             </div>
             <p className="text-sm text-gray-400 leading-relaxed mb-5">
-              {settings?.org_tagline || 'Empowering communities through education, health support, and social welfare programs since 2010.'}
+              {settings?.org_tagline ||
+                "Empowering communities through education, health support, and social welfare programs since 2010."}
             </p>
             {/* Social Links */}
             <div className="flex flex-wrap gap-2.5">
               {[
-                { icon: <FiFacebook />, href: settings?.social_facebook, name: 'Facebook' },
-                { icon: <FiInstagram />, href: settings?.social_instagram, name: 'Instagram' },
-                { icon: <FiTwitter />, href: settings?.social_twitter, name: 'Twitter' },
-                { icon: <FiLinkedin />, href: settings?.social_linkedin, name: 'LinkedIn' },
-                { icon: <FiYoutube />, href: settings?.social_youtube, name: 'YouTube' },
+                {
+                  icon: <FaFacebookF />,
+                  href: settings?.social_facebook,
+                  name: "Facebook",
+                  bg: "bg-[#1877F2]",
+                  color: "text-white",
+                },
+                {
+                  icon: <FiInstagram />,
+                  href: settings?.social_instagram,
+                  name: "Instagram",
+                  bg: "bg-gradient-to-br from-[#F58529] via-[#DD2A7B] to-[#8134AF]",
+                  color: "text-white",
+                },
+                {
+                  icon: <FiTwitter />,
+                  href: settings?.social_twitter,
+                  name: "Twitter",
+                  bg: "bg-[#1DA1F2]",
+                  color: "text-white",
+                },
+                {
+                  icon: <FiLinkedin />,
+                  href: settings?.social_linkedin,
+                  name: "LinkedIn",
+                  bg: "bg-[#0A66C2]",
+                  color: "text-white",
+                },
+                {
+                  icon: <FiYoutube />,
+                  href: settings?.social_youtube,
+                  name: "YouTube",
+                  bg: "bg-[#FF0000]",
+                  color: "text-white",
+                },
               ]
-              .filter((s) => s.href && s.href.trim() !== '')
-              .map((s, i) => (
-                <a
-                  key={i}
-                  href={s.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-9 h-9 bg-gray-800 hover:bg-primary-600 text-gray-400 hover:text-white rounded-lg flex items-center justify-center transition-all duration-200"
-                  aria-label={`Visit our ${s.name}`}
-                >
-                  {s.icon}
-                </a>
-              ))}
+                .filter((s) => s.href && s.href.trim() !== "")
+                .map((s, i) => (
+                  <a
+                    key={i}
+                    href={s.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={`w-9 h-9 ${s.bg} ${s.color} rounded-lg flex items-center justify-center transition-all duration-200 hover:opacity-90`}
+                    aria-label={`Visit our ${s.name}`}
+                  >
+                    {s.icon}
+                  </a>
+                ))}
             </div>
           </div>
 
           {/* Quick Links */}
           <div>
-            <h4 className="text-white font-semibold mb-4 text-sm uppercase tracking-wider">Quick Links</h4>
+            <h4 className="text-white font-semibold mb-4 text-sm uppercase tracking-wider">
+              Quick Links
+            </h4>
             <ul className="space-y-2.5">
               {quickLinks.map((link) => (
                 <li key={link.path}>
@@ -116,7 +171,9 @@ const Footer = () => {
 
           {/* Support Links */}
           <div>
-            <h4 className="text-white font-semibold mb-4 text-sm uppercase tracking-wider">Support</h4>
+            <h4 className="text-white font-semibold mb-4 text-sm uppercase tracking-wider">
+              Support
+            </h4>
             <ul className="space-y-2.5">
               {supportLinks.map((link) => (
                 <li key={link.path}>
@@ -134,22 +191,32 @@ const Footer = () => {
 
           {/* Contact & Newsletter */}
           <div>
-            <h4 className="text-white font-semibold mb-4 text-sm uppercase tracking-wider">Get In Touch</h4>
+            <h4 className="text-white font-semibold mb-4 text-sm uppercase tracking-wider">
+              Get In Touch
+            </h4>
             <div className="space-y-3 mb-6">
               <div className="flex items-start gap-3">
                 <FiMapPin className="w-4 h-4 text-primary-400 mt-0.5 shrink-0" />
-                <span className="text-sm text-gray-400">{settings?.org_address || 'Ontario, Canada'}</span>
+                <span className="text-sm text-gray-400">
+                  {settings?.org_address || "Ontario, Canada"}
+                </span>
               </div>
               <div className="flex items-center gap-3">
                 <FiPhone className="w-4 h-4 text-primary-400 shrink-0" />
-                <a href={`tel:${settings?.org_phone || '+1 (555) 123-4567'}`} className="text-sm text-gray-400 hover:text-white transition-colors">
-                  {settings?.org_phone || '+1 (555) 123-4567'}
+                <a
+                  href={`tel:${settings?.org_phone || "+1 (555) 123-4567"}`}
+                  className="text-sm text-gray-400 hover:text-white transition-colors"
+                >
+                  {settings?.org_phone || "+1 (555) 123-4567"}
                 </a>
               </div>
               <div className="flex items-center gap-3">
                 <FiMail className="w-4 h-4 text-primary-400 shrink-0" />
-                <a href={`mailto:${settings?.org_email || 'info@ngo.org'}`} className="text-sm text-gray-400 hover:text-white transition-colors">
-                  {settings?.org_email || 'info@ngo.org'}
+                <a
+                  href={`mailto:${settings?.org_email || "info@ngo.org"}`}
+                  className="text-sm text-gray-400 hover:text-white transition-colors"
+                >
+                  {settings?.org_email || "info@ngo.org"}
                 </a>
               </div>
             </div>
@@ -183,14 +250,34 @@ const Footer = () => {
       <div className="border-t border-gray-800">
         <div className="container-custom py-5 flex flex-col sm:flex-row items-center justify-between gap-3">
           <p className="text-xs text-gray-500">
-            © {new Date().getFullYear()} {settings?.org_name || 'Anpuneri Humanitarian Relief Org'}. All rights reserved.
+            © {new Date().getFullYear()}{" "}
+            {settings?.org_name || "Anpuneri Humanitarian Relief Org"}. All
+            rights reserved.
           </p>
           <div className="flex gap-4">
-            <Link to="/privacy" className="text-xs text-gray-500 hover:text-white transition-colors">Privacy</Link>
-            <Link to="/terms" className="text-xs text-gray-500 hover:text-white transition-colors">Terms</Link>
-            <Link to="/faqs" className="text-xs text-gray-500 hover:text-white transition-colors">FAQs</Link>
+            <Link
+              to="/privacy"
+              className="text-xs text-gray-500 hover:text-white transition-colors"
+            >
+              Privacy
+            </Link>
+            <Link
+              to="/terms"
+              className="text-xs text-gray-500 hover:text-white transition-colors"
+            >
+              Terms
+            </Link>
+            <Link
+              to="/faqs"
+              className="text-xs text-gray-500 hover:text-white transition-colors"
+            >
+              FAQs
+            </Link>
           </div>
-          <p className="text-xs text-gray-600">Made with <FiHeart className="inline text-red-500 w-3 h-3" /> for the community</p>
+          <p className="text-xs text-gray-600">
+            Made with <FiHeart className="inline text-red-500 w-3 h-3" /> for
+            the community
+          </p>
         </div>
       </div>
     </footer>

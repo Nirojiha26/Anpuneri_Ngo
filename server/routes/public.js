@@ -15,11 +15,15 @@ const { getFAQs } = require('../controllers/faqController');
 const { getSuccessStories, getSuccessStory } = require('../controllers/successStoryController');
 const { getPublicStats } = require('../controllers/dashboardController');
 const { getPublicSettings } = require('../controllers/settingsController');
+const { getSliders } = require('../controllers/sliderController');
 const { contactLimiter } = require('../middlewares/rateLimiter');
 
 // Stats
 router.get('/stats', getPublicStats);
 router.get('/settings', getPublicSettings);
+
+// Sliders
+router.get('/sliders', getSliders);
 
 // Projects
 router.get('/projects', getProjects);

@@ -20,6 +20,7 @@ const { adminGetFAQs, createFAQ, updateFAQ, deleteFAQ } = require('../controller
 const { adminGetSuccessStories, createSuccessStory, updateSuccessStory, deleteSuccessStory } = require('../controllers/successStoryController');
 const { getDashboardStats } = require('../controllers/dashboardController');
 const { adminGetSettings, updateSettings, updateSingleSetting } = require('../controllers/settingsController');
+const { adminGetSliders, createSlider, updateSlider, deleteSlider } = require('../controllers/sliderController');
 const User = require('../models/User');
 const ApiResponse = require('../utils/apiResponse');
 const asyncHandler = require('express-async-handler');
@@ -102,6 +103,12 @@ router.delete('/success-stories/:id', authorize('admin'), deleteSuccessStory);
 router.get('/settings', adminGetSettings);
 router.put('/settings', authorize('admin'), updateSettings);
 router.patch('/settings/:key', authorize('admin'), updateSingleSetting);
+
+// Sliders
+router.get('/sliders', adminGetSliders);
+router.post('/sliders', upload.single('image'), createSlider);
+router.put('/sliders/:id', upload.single('image'), updateSlider);
+router.delete('/sliders/:id', authorize('admin'), deleteSlider);
 
 // Users management (admin only)
 router.get('/users', authorize('admin'), asyncHandler(async (req, res) => {

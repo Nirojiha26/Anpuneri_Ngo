@@ -1,16 +1,17 @@
-const asyncHandler = require('express-async-handler');
-const ApiResponse = require('../utils/apiResponse');
-const User = require('../models/User');
-const Project = require('../models/Project');
-const Event = require('../models/Event');
-const News = require('../models/News');
-const Gallery = require('../models/Gallery');
-const Volunteer = require('../models/Volunteer');
-const Donation = require('../models/Donation');
-const Contact = require('../models/Contact');
-const TeamMember = require('../models/TeamMember');
-const Testimonial = require('../models/Testimonial');
-const SuccessStory = require('../models/SuccessStory');
+const asyncHandler = require("express-async-handler");
+const ApiResponse = require("../utils/apiResponse");
+const User = require("../models/User");
+const Project = require("../models/Project");
+const Event = require("../models/Event");
+const News = require("../models/News");
+const Gallery = require("../models/Gallery");
+const Volunteer = require("../models/Volunteer");
+const Donation = require("../models/Donation");
+const Contact = require("../models/Contact");
+const TeamMember = require("../models/TeamMember");
+const Testimonial = require("../models/Testimonial");
+const SuccessStory = require("../models/SuccessStory");
+const Settings = require("../models/Settings");
 
 const getDashboardStats = asyncHandler(async (req, res) => {
   const [
@@ -32,54 +33,68 @@ const getDashboardStats = asyncHandler(async (req, res) => {
   ] = await Promise.all([
     User.countDocuments(),
     Project.countDocuments(),
-    Project.countDocuments({ status: 'ongoing', visibility: 'published' }),
+    Project.countDocuments({ status: "ongoing", visibility: "published" }),
     Event.countDocuments(),
-    Event.countDocuments({ startDate: { $gte: new Date() }, visibility: 'published' }),
-    News.countDocuments({ status: 'published' }),
-    Gallery.countDocuments({ status: 'published' }),
+    Event.countDocuments({
+      startDate: { $gte: new Date() },
+      visibility: "published",
+    }),
+    News.countDocuments({ status: "published" }),
+    Gallery.countDocuments({ status: "published" }),
     Volunteer.countDocuments(),
-    Volunteer.countDocuments({ status: 'pending' }),
+    Volunteer.countDocuments({ status: "pending" }),
     Contact.countDocuments(),
-    Contact.countDocuments({ status: 'new' }),
+    Contact.countDocuments({ status: "new" }),
     Donation.aggregate([
-      { $match: { status: 'completed' } },
+      { $match: { status: "completed" } },
       {
         $group: {
           _id: null,
-          totalRaised: { $sum: '$amount' },
+          totalRaised: { $sum: "$amount" },
           count: { $sum: 1 },
         },
       },
     ]),
-    TeamMember.countDocuments({ status: 'active' }),
-    Testimonial.countDocuments({ status: 'published' }),
-    SuccessStory.countDocuments({ status: 'published' }),
+    TeamMember.countDocuments({ status: "active" }),
+    Testimonial.countDocuments({ status: "published" }),
+    SuccessStory.countDocuments({ status: "published" }),
   ]);
 
   // Recent activities
-  const [recentDonations, recentVolunteers, recentContacts] = await Promise.all([
-    Donation.find({ status: 'completed' }).sort({ createdAt: -1 }).limit(5).select('donorName amount createdAt purpose'),
-    Volunteer.find().sort({ createdAt: -1 }).limit(5).select('name email status createdAt'),
-    Contact.find().sort({ createdAt: -1 }).limit(5).select('name email subject status createdAt'),
-  ]);
+  const [recentDonations, recentVolunteers, recentContacts] = await Promise.all(
+    [
+      Donation.find({ status: "completed" })
+        .sort({ createdAt: -1 })
+        .limit(5)
+        .select("donorName amount createdAt purpose"),
+      Volunteer.find()
+        .sort({ createdAt: -1 })
+        .limit(5)
+        .select("name email status createdAt"),
+      Contact.find()
+        .sort({ createdAt: -1 })
+        .limit(5)
+        .select("name email subject status createdAt"),
+    ],
+  );
 
   // Monthly donation trend (last 6 months)
   const sixMonthsAgo = new Date();
   sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
 
   const monthlyDonations = await Donation.aggregate([
-    { $match: { status: 'completed', createdAt: { $gte: sixMonthsAgo } } },
+    { $match: { status: "completed", createdAt: { $gte: sixMonthsAgo } } },
     {
       $group: {
         _id: {
-          year: { $year: '$createdAt' },
-          month: { $month: '$createdAt' },
+          year: { $year: "$createdAt" },
+          month: { $month: "$createdAt" },
         },
-        total: { $sum: '$amount' },
+        total: { $sum: "$amount" },
         count: { $sum: 1 },
       },
     },
-    { $sort: { '_id.year': 1, '_id.month': 1 } },
+    { $sort: { "_id.year": 1, "_id.month": 1 } },
   ]);
 
   return ApiResponse.success(res, {
@@ -111,20 +126,18 @@ const getDashboardStats = asyncHandler(async (req, res) => {
 });
 
 const getPublicStats = asyncHandler(async (req, res) => {
-  const [studentsHelped, familiesSupported, volunteers, projectsCompleted, totalDonations] = await Promise.all([
-    Project.aggregate([{ $match: { status: 'completed' } }, { $group: { _id: null, total: { $sum: '$beneficiaries' } } }]),
-    Volunteer.countDocuments({ status: 'approved' }),
-    Volunteer.countDocuments({ status: 'approved' }),
-    Project.countDocuments({ status: 'completed' }),
-    Donation.aggregate([{ $match: { status: 'completed' } }, { $group: { _id: null, total: { $sum: '$amount' } } }]),
-  ]);
+  const settings = await Settings.find({ group: "stats", isPublic: true });
+  const settingsMap = settings.reduce((acc, setting) => {
+    acc[setting.key] = setting.value;
+    return acc;
+  }, {});
 
   return ApiResponse.success(res, {
-    studentsHelped: studentsHelped[0]?.total || 1250,
-    familiesSupported: 520,
-    volunteers,
-    projectsCompleted,
-    totalDonations: totalDonations[0]?.total || 0,
+    studentsHelped: Number(settingsMap.stat_students_helped) || 0,
+    familiesSupported: Number(settingsMap.stat_families_supported) || 0,
+    volunteers: Number(settingsMap.stat_volunteers) || 0,
+    projectsCompleted: Number(settingsMap.stat_projects_completed) || 0,
+    totalDonations: Number(settingsMap.stat_total_donations) || 0,
   });
 });
 

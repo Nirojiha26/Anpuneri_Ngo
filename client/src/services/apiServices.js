@@ -145,3 +145,14 @@ export const userService = {
   updateStatus: (id, isActive) => api.patch(`/admin/users/${id}/status`, { isActive }),
   updateRole: (id, role) => api.patch(`/admin/users/${id}/role`, { role }),
 };
+
+// ── Sliders ──────────────────────────────────────────────────────
+export const sliderService = {
+  getPublic: () => api.get('/sliders'),
+  // Admin
+  adminGetAll: (params) => api.get('/admin/sliders', { params }),
+  create: (data) => api.post('/admin/sliders', data, { headers: { 'Content-Type': 'multipart/form-data' } }),
+  update: (id, data) => api.put(`/admin/sliders/${id}`, data, { headers: { 'Content-Type': 'multipart/form-data' } }),
+  delete: (id) => api.delete(`/admin/sliders/${id}`),
+};
+

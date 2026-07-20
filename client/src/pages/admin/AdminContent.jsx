@@ -271,7 +271,7 @@ const GalleryForm = ({ item, onClose }) => {
         <Input label="Sort Order" type="number" min={0} {...register('sortOrder', { valueAsNumber: true })} />
         <label className="flex items-center gap-2 text-sm text-gray-700 cursor-pointer pt-8">
           <input type="checkbox" className="w-4 h-4" {...register('isFeatured')} />
-          Featured
+          Show on Home Page
         </label>
       </div>
       <FileInput id="gal-image" label="Image" currentUrl={item?.image} />
@@ -294,7 +294,7 @@ export const AdminGallery = () => (
       { key: 'title', label: 'Title', render: (g) => <span className="text-sm font-medium text-gray-900">{g.title}</span> },
       { key: 'category', label: 'Category', render: (g) => <span className="text-sm capitalize text-gray-600">{g.category}</span> },
       { key: 'status', label: 'Status', render: (g) => <StatusBadge status={g.status} /> },
-      { key: 'isFeatured', label: 'Featured', render: (g) => (
+      { key: 'isFeatured', label: 'Show on Home', render: (g) => (
         <span className={`text-xs font-medium ${g.isFeatured ? 'text-primary-600' : 'text-gray-400'}`}>
           {g.isFeatured ? '★ Yes' : 'No'}
         </span>
