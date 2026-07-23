@@ -70,25 +70,32 @@ const GalleryPage = () => {
             <p className="text-lg">No photos found</p>
           </div>
         ) : (
-          <div className="columns-2 md:columns-3 lg:columns-4 gap-4 space-y-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 md:gap-8">
             {images.map((img, i) => (
               <motion.div
                 key={img._id || i}
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: i * 0.05 }}
-                whileHover={{ scale: 1.02 }}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: i * 0.1, duration: 0.5, ease: "easeOut" }}
+                whileHover={{ y: -5 }}
                 onClick={() => setLightbox(img)}
-                className="break-inside-avoid cursor-pointer rounded-2xl overflow-hidden group relative"
+                className="cursor-pointer rounded-2xl overflow-hidden group relative shadow-sm hover:shadow-xl transition-all duration-300 bg-white"
               >
-                <img
-                  src={getImageUrl(img.image)}
-                  alt={img.title}
-                  className="w-full object-cover"
-                  loading="lazy"
-                />
-                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-all flex items-end p-3 opacity-0 group-hover:opacity-100">
-                  <span className="text-white text-xs font-medium">{img.title}</span>
+                <div className="aspect-[4/3] w-full overflow-hidden">
+                  <img
+                    src={getImageUrl(img.image)}
+                    alt={img.title}
+                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                    loading="lazy"
+                  />
+                </div>
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-6">
+                  <span className="text-white text-lg font-semibold transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
+                    {img.title || 'Gallery Image'}
+                  </span>
+                  <span className="text-white/80 text-sm mt-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 delay-100">
+                    Click to view full size
+                  </span>
                 </div>
               </motion.div>
             ))}

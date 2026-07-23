@@ -14,6 +14,7 @@ import ProjectDetailsPage from './pages/public/ProjectDetailsPage';
 import EventsPage from './pages/public/EventsPage';
 import EventDetailsPage from './pages/public/EventDetailsPage';
 import NewsPage from './pages/public/NewsPage';
+import NewsDetailsPage from './pages/public/NewsDetailsPage';
 import GalleryPage from './pages/public/GalleryPage';
 import VolunteerPage from './pages/public/VolunteerPage';
 import DonatePage from './pages/public/DonatePage';
@@ -34,6 +35,7 @@ import {
   AdminEvents, AdminNews, AdminGallery, AdminTeam,
   AdminTestimonials, AdminFAQs, AdminStories, AdminUsers,
 } from './pages/admin/AdminContent';
+import AdminProfile from './pages/admin/AdminProfile';
 
 const App = () => {
   const dispatch = useDispatch();
@@ -58,6 +60,7 @@ const App = () => {
             <Route path="events" element={<EventsPage />} />
             <Route path="events/:id" element={<EventDetailsPage />} />
             <Route path="news" element={<NewsPage />} />
+            <Route path="news/:id" element={<NewsDetailsPage />} />
             <Route path="gallery" element={<GalleryPage />} />
             <Route path="volunteer" element={<VolunteerPage />} />
             <Route path="donate" element={<DonatePage />} />
@@ -92,6 +95,7 @@ const App = () => {
             <Route path="faqs" element={<AdminFAQs />} />
             <Route path="users" element={<AdminUsers />} />
             <Route path="settings" element={<AdminSettings />} />
+            <Route path="profile" element={<AdminProfile />} />
           </Route>
         </Routes>
       </Suspense>
