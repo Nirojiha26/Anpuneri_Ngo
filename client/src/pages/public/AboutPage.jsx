@@ -47,7 +47,7 @@ const AboutPage = () => {
 
     {/* Story */}
     <SectionWrapper bg="white">
-      <div className="grid lg:grid-cols-2 gap-14 items-center">
+      <div className={`grid ${settings?.about_story_image ? 'lg:grid-cols-2' : 'grid-cols-1 max-w-4xl mx-auto'} gap-14 items-center`}>
         <div>
           <span className="text-sm font-semibold text-primary-600 uppercase tracking-widest">Our Story</span>
           <h2 className="text-3xl font-bold text-gray-900 mt-2 mb-5 font-heading">
@@ -72,21 +72,24 @@ const AboutPage = () => {
               </p>
             </>
           )}
-          <Link to="/mission" className="btn-primary">
-            Our Mission <FiArrowRight className="w-4 h-4" />
+          <Link to="/mission" className="btn-primary mt-4">
+            Our Mission <FiArrowRight className="w-4 h-4 inline ml-2" />
           </Link>
         </div>
-        <div className="relative">
-          <img
-            src="https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?w=700"
-            alt="NGO community work"
-            className="rounded-2xl w-full h-96 object-cover shadow-xl"
-          />
-          <div className="absolute -bottom-6 -left-6 bg-primary-600 text-white rounded-2xl p-6 shadow-xl">
-            <div className="text-4xl font-bold mb-1">14+</div>
-            <div className="text-primary-200 text-sm">Years of Service</div>
+        
+        {settings?.about_story_image && (
+          <div className="relative">
+            <img
+              src={getImageUrl(settings.about_story_image)}
+              alt="NGO community work"
+              className="rounded-2xl w-full h-96 object-cover shadow-xl"
+            />
+            <div className="absolute -bottom-6 -left-6 bg-primary-600 text-white rounded-2xl p-6 shadow-xl">
+              <div className="text-4xl font-bold mb-1">14+</div>
+              <div className="text-primary-200 text-sm">Years of Service</div>
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </SectionWrapper>
 

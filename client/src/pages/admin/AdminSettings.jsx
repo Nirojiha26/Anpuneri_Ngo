@@ -37,7 +37,12 @@ const AdminSettings = () => {
       const vals = {};
       data.forEach((s) => { vals[s.key] = s.value; });
       setValues(vals);
-    }).finally(() => setLoading(false));
+    })
+    .catch((err) => {
+      console.error('Error fetching settings:', err);
+      toast.error('Error fetching settings: ' + (err.response?.data?.message || err.message));
+    })
+    .finally(() => setLoading(false));
   }, []);
 
   const grouped = useMemo(() => {
@@ -65,8 +70,15 @@ const AdminSettings = () => {
       formData.append('image', file);
       const res = await settingsService.uploadImage(formData);
       const url = res.data.data.url;
-      setValues({ ...values, [key]: url });
-      toast.success('Image uploaded successfully', { id: toastId });
+      
+      const newValues = { ...values, [key]: url };
+      setValues(newValues);
+      
+      // Auto-save the setting immediately to avoid confusion
+      const updatedData = { settings: Object.entries(newValues).map(([k, v]) => ({ key: k, value: v })) };
+      await settingsService.update(updatedData);
+      
+      toast.success('Image uploaded & saved successfully!', { id: toastId });
     } catch (err) {
       toast.error(err.response?.data?.message || 'Failed to upload image', { id: toastId });
     }

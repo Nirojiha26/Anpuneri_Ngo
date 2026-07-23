@@ -110,26 +110,42 @@ const GalleryPage = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 bg-black/90 flex items-center justify-center p-4"
+            className="fixed inset-0 z-50 bg-black/95 flex flex-col items-center justify-center p-4"
             onClick={() => setLightbox(null)}
           >
             <button
               onClick={() => setLightbox(null)}
-              className="absolute top-4 right-4 p-2 bg-white/10 hover:bg-white/20 text-white rounded-full transition-colors"
+              className="absolute top-4 right-4 md:top-6 md:right-6 p-2 bg-white/10 hover:bg-white/20 text-white rounded-full transition-colors z-[60]"
             >
-              <FiX className="w-6 h-6" />
+              <FiX className="w-6 h-6 md:w-8 md:h-8" />
             </button>
-            <motion.img
-              initial={{ scale: 0.8 }}
-              animate={{ scale: 1 }}
-              src={getImageUrl(lightbox.image)}
-              alt={lightbox.title}
-              className="max-w-full max-h-[85vh] rounded-xl object-contain"
+            
+            <div 
+              className="relative w-full max-w-5xl flex flex-col items-center justify-center h-full max-h-screen"
               onClick={(e) => e.stopPropagation()}
-            />
-            {lightbox.title && (
-              <p className="absolute bottom-6 text-white/80 text-sm">{lightbox.title}</p>
-            )}
+            >
+              <motion.img
+                initial={{ scale: 0.9, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                src={getImageUrl(lightbox.image)}
+                alt={lightbox.title}
+                className="max-w-full max-h-[75vh] md:max-h-[80vh] rounded-xl object-contain shadow-2xl"
+              />
+              
+              <motion.div 
+                initial={{ y: 20, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ delay: 0.2 }}
+                className="w-full max-w-4xl mt-4 md:mt-6 bg-white/10 backdrop-blur-md border border-white/10 p-4 md:p-6 rounded-2xl text-center shadow-xl overflow-y-auto custom-scrollbar max-h-[25vh]"
+              >
+                {lightbox.title && (
+                  <h3 className="text-white text-lg md:text-2xl font-bold mb-2 font-heading tracking-wide">{lightbox.title}</h3>
+                )}
+                {lightbox.description && (
+                  <p className="text-gray-200 text-sm md:text-base leading-relaxed max-w-3xl mx-auto">{lightbox.description}</p>
+                )}
+              </motion.div>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>

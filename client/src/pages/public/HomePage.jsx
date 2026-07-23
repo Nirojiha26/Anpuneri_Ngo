@@ -541,11 +541,11 @@ const GallerySlider = ({ gallery }) => {
                 initial={{ y: 20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ delay: 0.2 }}
-                className="w-full mt-4 md:mt-6 text-center max-w-2xl px-4"
+                className="w-full max-w-4xl mt-4 md:mt-6 bg-white/10 backdrop-blur-md border border-white/10 p-4 md:p-6 rounded-2xl text-center shadow-xl overflow-y-auto custom-scrollbar max-h-[25vh]"
               >
-                <h3 className="text-white text-lg md:text-2xl font-bold mb-2 md:mb-3">{lightbox.title}</h3>
+                <h3 className="text-white text-lg md:text-2xl font-bold mb-2 md:mb-3 font-heading tracking-wide">{lightbox.title}</h3>
                 {lightbox.description && (
-                  <p className="text-gray-300 text-xs md:text-base">{lightbox.description}</p>
+                  <p className="text-gray-200 text-sm md:text-base leading-relaxed max-w-3xl mx-auto">{lightbox.description}</p>
                 )}
               </motion.div>
             </div>
