@@ -237,20 +237,18 @@ const StatsSection = ({ stats }) => {
           {items.map((item, i) => (
             <motion.div
               key={i}
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 1, y: 0 }}
               animate={isInView ? { opacity: 1, y: 0 } : {}}
               transition={{ delay: i * 0.1 }}
               className="text-center"
             >
               <div className="text-3xl md:text-5xl font-bold text-white mb-2 font-heading">
-                {isInView && (
-                  <CountUp
-                    end={item.value}
-                    duration={2.5}
-                    separator=","
-                    delay={i * 0.1}
-                  />
-                )}
+                <CountUp
+                  end={item.value}
+                  duration={2.5}
+                  separator=","
+                  delay={i * 0.1}
+                />
                 {item.suffix}
               </div>
               <p className="text-primary-200 text-xs md:text-base font-medium">
