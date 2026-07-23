@@ -3,10 +3,11 @@ import { useNavigate, Link } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 import { motion } from 'framer-motion';
-import { FiMail, FiLock, FiHeart, FiAlertCircle } from 'react-icons/fi';
+import { FiMail, FiLock, FiHeart, FiAlertCircle, FiArrowLeft } from 'react-icons/fi';
 import { login, clearError } from '../../redux/slices/authSlice';
 import Button from '../../components/common/Button';
 import Input from '../../components/common/Input';
+import bgImage from '../../assets/images/admin-login-bg.png';
 
 const AdminLoginPage = () => {
   const { loading, error, isAuthenticated } = useSelector((s) => s.auth);
@@ -25,41 +26,88 @@ const AdminLoginPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary-900 via-primary-800 to-primary-700 flex items-center justify-center p-4">
-      <motion.div
-        initial={{ opacity: 0, y: 20, scale: 0.96 }}
-        animate={{ opacity: 1, y: 0, scale: 1 }}
-        transition={{ duration: 0.4 }}
-        className="w-full max-w-md"
-      >
-        {/* Card */}
-        <div className="bg-white rounded-2xl shadow-2xl overflow-hidden">
-          {/* Header */}
-          <div className="bg-gradient-to-r from-primary-600 to-primary-700 px-8 py-8 text-center">
-            <div className="w-14 h-14 bg-white/20 rounded-2xl flex items-center justify-center mx-auto mb-4">
-              <FiHeart className="text-white w-7 h-7" />
+    <div className="min-h-screen flex bg-white">
+      {/* Left section - Image */}
+      <div className="hidden lg:flex lg:w-1/2 relative bg-primary-900 overflow-hidden">
+        <div className="absolute inset-0 bg-primary-900/30 mix-blend-multiply z-10" />
+        <img 
+          src={bgImage} 
+          alt="Humanitarian relief" 
+          className="absolute inset-0 w-full h-full object-cover scale-105"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-primary-900 via-primary-900/60 to-transparent z-20" />
+        
+        <div className="relative z-30 flex flex-col justify-end p-12 xl:p-16 h-full text-white w-full">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+          >
+            <div className="w-16 h-16 bg-white/20 backdrop-blur-md rounded-2xl flex items-center justify-center mb-8 border border-white/30 shadow-xl">
+              <FiHeart className="text-white w-8 h-8 drop-shadow-md" />
             </div>
-            <h1 className="text-2xl font-bold text-white font-heading">Admin Portal</h1>
-            <p className="text-primary-200 text-sm mt-1">{settings?.org_name || 'Anpuneri'} NGO</p>
-          </div>
+            <h1 className="text-4xl xl:text-5xl font-bold font-heading mb-6 leading-tight drop-shadow-lg">
+              Making a difference, <br />
+              <span className="text-primary-300">together.</span>
+            </h1>
+            <p className="text-lg xl:text-xl text-primary-50/90 max-w-lg leading-relaxed drop-shadow-md font-medium">
+              Welcome to the {settings?.org_name || 'Anpuneri'} NGO Admin Portal. Manage operations, track relief efforts, and coordinate volunteers efficiently.
+            </p>
+          </motion.div>
+        </div>
+      </div>
 
-          <div className="px-8 py-8">
-            <h2 className="text-xl font-semibold text-gray-900 mb-6">Sign in to your account</h2>
+      {/* Right section - Login Form */}
+      <div className="w-full lg:w-1/2 flex items-center justify-center p-6 sm:p-12 xl:p-16 bg-gray-50/50">
+        <div className="w-full max-w-md relative">
+          <Link 
+            to="/" 
+            className="inline-flex items-center gap-2 text-sm font-semibold text-gray-500 hover:text-primary-600 transition-colors mb-10 group"
+          >
+            <div className="w-8 h-8 rounded-full bg-gray-200/60 flex items-center justify-center group-hover:bg-primary-100 group-hover:text-primary-600 transition-colors">
+              <FiArrowLeft className="w-4 h-4" />
+            </div>
+            Back to Website
+          </Link>
+
+          <motion.div
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.4 }}
+          >
+            {/* Mobile Header */}
+            <div className="lg:hidden mb-10 text-center">
+              <div className="w-16 h-16 bg-primary-100 rounded-2xl flex items-center justify-center mx-auto mb-5 shadow-sm border border-primary-200/50">
+                <FiHeart className="text-primary-600 w-8 h-8" />
+              </div>
+              <h1 className="text-3xl font-bold text-gray-900 font-heading tracking-tight">Admin Portal</h1>
+              <p className="text-gray-500 text-base mt-2 font-medium">{settings?.org_name || 'Anpuneri'} NGO</p>
+            </div>
+
+            {/* Desktop Header */}
+            <div className="hidden lg:block mb-10">
+              <h2 className="text-4xl font-extrabold text-gray-900 font-heading tracking-tight">Welcome Back</h2>
+              <p className="text-gray-500 mt-3 text-lg font-medium">Sign in to your administrator account</p>
+            </div>
 
             {error && (
-              <div className="flex items-center gap-2.5 bg-red-50 border border-red-200 rounded-xl p-3.5 mb-5">
-                <FiAlertCircle className="text-red-500 shrink-0 w-4 h-4" />
-                <p className="text-red-700 text-sm">{error}</p>
-              </div>
+              <motion.div 
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                className="flex items-start gap-3 bg-red-50 border border-red-200 rounded-xl p-4 mb-8 shadow-sm"
+              >
+                <FiAlertCircle className="text-red-500 shrink-0 w-5 h-5 mt-0.5" />
+                <p className="text-red-700 text-sm font-medium leading-relaxed">{error}</p>
+              </motion.div>
             )}
 
-            <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
               <Input
                 label="Email Address"
                 type="email"
                 required
                 placeholder="admin@ngo.org"
-                icon={<FiMail className="w-4 h-4" />}
+                icon={<FiMail className="w-5 h-5" />}
                 error={errors.email?.message}
                 autoComplete="email"
                 {...register('email', {
@@ -67,43 +115,33 @@ const AdminLoginPage = () => {
                   pattern: { value: /^\S+@\S+\.\S+$/, message: 'Invalid email' },
                 })}
               />
+              
               <Input
                 label="Password"
                 type="password"
                 required
-                placeholder="Your password"
-                icon={<FiLock className="w-4 h-4" />}
+                placeholder="••••••••"
+                icon={<FiLock className="w-5 h-5" />}
                 error={errors.password?.message}
                 autoComplete="current-password"
                 {...register('password', { required: 'Password is required' })}
               />
 
-              <Button
-                type="submit"
-                loading={loading}
-                fullWidth
-                size="lg"
-                className="mt-2"
-              >
-                Sign In
-              </Button>
+              <div className="pt-4">
+                <Button
+                  type="submit"
+                  loading={loading}
+                  fullWidth
+                  size="lg"
+                  className="shadow-lg shadow-primary-600/30 text-base font-semibold py-4 rounded-xl hover:shadow-primary-600/40 transition-all hover:-translate-y-0.5"
+                >
+                  Sign In to Dashboard
+                </Button>
+              </div>
             </form>
-
-            {/* Demo credentials */}
-            <div className="mt-6 p-4 bg-amber-50 border border-amber-200 rounded-xl">
-              <p className="text-xs font-semibold text-amber-700 mb-1">Demo Credentials</p>
-              <p className="text-xs text-amber-600">Email: <span className="font-mono">admin@ngo.org</span></p>
-              <p className="text-xs text-amber-600">Password: <span className="font-mono">Admin@123456</span></p>
-            </div>
-
-            <div className="text-center mt-5">
-              <Link to="/" className="text-sm text-gray-500 hover:text-primary-600 transition-colors">
-                ← Back to Website
-              </Link>
-            </div>
-          </div>
+          </motion.div>
         </div>
-      </motion.div>
+      </div>
     </div>
   );
 };

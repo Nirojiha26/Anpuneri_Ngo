@@ -32,19 +32,29 @@ import { dashboardService } from "../../services/apiServices";
 import { Spinner } from "../../components/common/Loading";
 import { formatCurrency, formatDate } from "../../utils/helpers";
 
-const StatCard = ({ label, value, bgColor, textColor, link }) => (
-  <Link to={link}>
+const StatCard = ({ label, value, bgGradient, link, subLabel }) => (
+  <Link to={link} className="block">
     <motion.div
-      whileHover={{ y: -2 }}
-      className={`rounded-xl p-5 flex flex-col justify-between h-[120px] ${bgColor} border shadow-sm`}
+      whileHover={{ y: -3, scale: 1.02 }}
+      transition={{ duration: 0.2 }}
+      className={`relative rounded-2xl p-4 flex flex-col justify-between h-[105px] ${bgGradient} text-white shadow-[0_8px_20px_rgba(0,0,0,0.08)] overflow-hidden group`}
     >
-      <div>
-        <p className={`text-3xl font-bold ${textColor}`}>{value}</p>
-        <p className="text-sm font-medium text-gray-600 mt-1">{label}</p>
+      {/* Decorative circle */}
+      <div className="absolute -bottom-8 -right-8 w-24 h-24 bg-white opacity-10 rounded-full group-hover:scale-110 transition-transform duration-500 blur-[2px]"></div>
+      
+      <div className="flex justify-between items-start relative z-10">
+        <p className="text-[9px] font-bold uppercase tracking-[0.2em] text-white/80">
+          {subLabel}
+        </p>
+        <div className="w-2 h-2 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.8)]"></div>
       </div>
-      <p className="text-xs font-medium text-gray-400 flex items-center gap-1">
-        More info <FiArrowRight className="w-3 h-3" />
-      </p>
+      
+      <div className="relative z-10 mt-auto">
+        <h3 className="text-lg md:text-xl font-bold font-heading mb-1.5 leading-tight truncate">{label}</h3>
+        <div className="inline-block px-2.5 py-0.5 bg-white/15 rounded-full backdrop-blur-md border border-white/20 shadow-sm">
+          <p className="text-[10px] md:text-xs font-bold text-white drop-shadow-sm">{value}</p>
+        </div>
+      </div>
     </motion.div>
   </Link>
 );
@@ -87,63 +97,42 @@ const AdminDashboard = () => {
 
   return (
     <div className="space-y-6">
-      {/* Stat Cards */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      {/* Stat Cards - 5 columns */}
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-4">
         <StatCard
           label="Total Raised"
           value={formatCurrency(dashboardStats?.donations?.totalRaised || 0)}
-          bgColor="bg-orange-50 border-orange-100"
-          textColor="text-orange-600"
+          bgGradient="bg-gradient-to-br from-[#25244E] to-[#393976]"
+          subLabel="DONATIONS"
           link="/admin/donations"
         />
         <StatCard
           label="Projects"
-          value={dashboardStats?.projects?.total || 0}
-          bgColor="bg-purple-50 border-purple-100"
-          textColor="text-purple-600"
+          value={`${dashboardStats?.projects?.total || 0} Active`}
+          bgGradient="bg-gradient-to-br from-[#7B52FF] to-[#4C65FF]"
+          subLabel="INITIATIVES"
           link="/admin/projects"
         />
         <StatCard
           label="Volunteers"
-          value={dashboardStats?.volunteers?.total || 0}
-          bgColor="bg-pink-50 border-pink-100"
-          textColor="text-pink-600"
+          value={`${dashboardStats?.volunteers?.total || 0} Registered`}
+          bgGradient="bg-gradient-to-br from-[#33B2B2] to-[#4AC8C8]"
+          subLabel="COMMUNITY"
           link="/admin/volunteers"
         />
         <StatCard
-          label="Gallery"
-          value={dashboardStats?.gallery || 0}
-          bgColor="bg-green-50 border-green-100"
-          textColor="text-green-600"
-          link="/admin/gallery"
-        />
-        <StatCard
           label="Events"
-          value={dashboardStats?.events?.total || 0}
-          bgColor="bg-blue-50 border-blue-100"
-          textColor="text-blue-600"
+          value={`${dashboardStats?.events?.total || 0} Scheduled`}
+          bgGradient="bg-gradient-to-br from-[#F24C4C] to-[#F58C4A]"
+          subLabel="UPCOMING"
           link="/admin/events"
         />
         <StatCard
           label="Messages"
-          value={dashboardStats?.contacts?.total || 0}
-          bgColor="bg-red-50 border-red-100"
-          textColor="text-red-600"
+          value={`${dashboardStats?.contacts?.total || 0} Total`}
+          bgGradient="bg-gradient-to-br from-[#2D2A5D] to-[#403B75]"
+          subLabel="INBOX"
           link="/admin/contacts"
-        />
-        <StatCard
-          label="News"
-          value={dashboardStats?.news || 0}
-          bgColor="bg-cyan-50 border-cyan-100"
-          textColor="text-cyan-600"
-          link="/admin/news"
-        />
-        <StatCard
-          label="Stories"
-          value={dashboardStats?.stories || 0}
-          bgColor="bg-indigo-50 border-indigo-100"
-          textColor="text-indigo-600"
-          link="/admin/stories"
         />
       </div>
 

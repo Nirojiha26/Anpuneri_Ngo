@@ -1,12 +1,14 @@
 import { useState, useEffect, useMemo } from 'react';
-import { FiSettings, FiSave } from 'react-icons/fi';
+import { FiSettings, FiSave, FiUpload } from 'react-icons/fi';
 import toast from 'react-hot-toast';
 import { settingsService } from '../../services/apiServices';
+import { getImageUrl } from '../../utils/helpers';
 import Button from '../../components/common/Button';
 import { Spinner } from '../../components/common/Loading';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const CATEGORY_LABELS = {
+  home: 'Home Page',
   general: 'Footer Details',
   about: 'About Page Overview',
   about_values: 'About Page - Values',
@@ -54,6 +56,21 @@ const AdminSettings = () => {
       setActiveTab(categories[0]);
     }
   }, [categories, activeTab]);
+
+  const handleImageUpload = async (key, file) => {
+    if (!file) return;
+    const toastId = toast.loading('Uploading image...');
+    try {
+      const formData = new FormData();
+      formData.append('image', file);
+      const res = await settingsService.uploadImage(formData);
+      const url = res.data.data.url;
+      setValues({ ...values, [key]: url });
+      toast.success('Image uploaded successfully', { id: toastId });
+    } catch (err) {
+      toast.error(err.response?.data?.message || 'Failed to upload image', { id: toastId });
+    }
+  };
 
   const handleSave = async () => {
     setSaving(true);
@@ -165,6 +182,16 @@ const AdminSettings = () => {
                           onChange={(e) => setValues({ ...values, [setting.key]: e.target.value })}
                           className="input-field min-h-[250px] resize-y p-4 text-base leading-relaxed"
                         />
+                      ) : setting.inputType === 'image' ? (
+                        <div className="flex items-center gap-6">
+                          {values[setting.key] && (
+                            <img src={getImageUrl(values[setting.key])} alt="Setting Image" className="w-24 h-24 object-cover rounded-xl shadow-sm border border-gray-200" />
+                          )}
+                          <label className="flex items-center gap-2 px-5 py-2.5 bg-white border border-gray-300 text-gray-700 rounded-xl shadow-sm hover:bg-gray-50 cursor-pointer transition-colors text-sm font-medium">
+                            <FiUpload /> Choose Image
+                            <input type="file" accept="image/*" className="hidden" onChange={(e) => handleImageUpload(setting.key, e.target.files[0])} />
+                          </label>
+                        </div>
                       ) : (
                         <input
                           type="text"

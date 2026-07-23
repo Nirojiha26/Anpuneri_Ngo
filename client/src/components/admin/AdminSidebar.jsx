@@ -15,33 +15,38 @@ const NAV_SECTIONS = [
     ],
   },
   {
-    label: 'Content',
+    label: 'Core Activities',
     items: [
-      { label: 'Sliders', path: '/admin/sliders', icon: <FiImage /> },
       { label: 'Projects', path: '/admin/projects', icon: <FiFolder /> },
       { label: 'Events', path: '/admin/events', icon: <FiCalendar /> },
       { label: 'Event Registrations', path: '/admin/event-registrations', icon: <FiUsers /> },
-      { label: 'News', path: '/admin/news', icon: <FiFileText /> },
-      { label: 'Gallery', path: '/admin/gallery', icon: <FiImage /> },
       { label: 'Success Stories', path: '/admin/stories', icon: <FiStar /> },
     ],
   },
   {
-    label: 'Community',
+    label: 'Media & Comms',
     items: [
-      { label: 'Volunteers', path: '/admin/volunteers', icon: <FiUsers /> },
-      { label: 'Donations', path: '/admin/donations', icon: <FiDollarSign /> },
-      { label: 'Messages', path: '/admin/contacts', icon: <FiMail /> },
-      { label: 'Testimonials', path: '/admin/testimonials', icon: <FiMessageSquare /> },
+      { label: 'News & Updates', path: '/admin/news', icon: <FiFileText /> },
+      { label: 'Photo Gallery', path: '/admin/gallery', icon: <FiImage /> },
+      { label: 'Banners / Sliders', path: '/admin/sliders', icon: <FiImage /> },
+      { label: 'Inbox / Messages', path: '/admin/contacts', icon: <FiMail /> },
+      { label: 'Public Reviews', path: '/admin/testimonials', icon: <FiMessageSquare /> },
     ],
   },
   {
-    label: 'Organization',
+    label: 'Community Support',
     items: [
-      { label: 'Team', path: '/admin/team', icon: <FiAward /> },
+      { label: 'Donations', path: '/admin/donations', icon: <FiDollarSign /> },
+      { label: 'Volunteers', path: '/admin/volunteers', icon: <FiUsers /> },
+    ],
+  },
+  {
+    label: 'Administration',
+    items: [
+      { label: 'Team Members', path: '/admin/team', icon: <FiAward /> },
       { label: 'FAQs', path: '/admin/faqs', icon: <FiHelpCircle /> },
-      { label: 'Users', path: '/admin/users', icon: <FiUsers /> },
-      { label: 'Settings', path: '/admin/settings', icon: <FiSettings /> },
+      { label: 'Admin Users', path: '/admin/users', icon: <FiUsers /> },
+      { label: 'Site Settings', path: '/admin/settings', icon: <FiSettings /> },
     ],
   },
 ];
@@ -54,7 +59,7 @@ const AdminSidebar = ({ isOpen, onClose }) => {
 
   const handleLogout = () => {
     dispatch(logout());
-    navigate('/');
+    navigate('/admin/login');
   };
 
   return (

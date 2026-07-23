@@ -10,7 +10,7 @@ const { applyVolunteer } = require('../controllers/volunteerController');
 const { createDonation } = require('../controllers/donationController');
 const { submitContact } = require('../controllers/contactController');
 const { getTeam } = require('../controllers/teamController');
-const { getTestimonials } = require('../controllers/testimonialController');
+const { getTestimonials, submitPublicTestimonial } = require('../controllers/testimonialController');
 const { getFAQs } = require('../controllers/faqController');
 const { getSuccessStories, getSuccessStory } = require('../controllers/successStoryController');
 const { getPublicStats } = require('../controllers/dashboardController');
@@ -46,6 +46,7 @@ router.get('/team', getTeam);
 
 // Testimonials
 router.get('/testimonials', getTestimonials);
+router.post('/testimonials', contactLimiter, submitPublicTestimonial);
 
 // FAQs
 router.get('/faqs', getFAQs);

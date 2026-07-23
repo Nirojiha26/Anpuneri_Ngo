@@ -35,15 +35,15 @@ const AdminTopBar = ({ onMenuClick, title }) => {
           <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full" />
         </button>
 
-        <div className="flex items-center gap-3 pl-4 ml-2 border-l border-gray-200">
+        <Link to="/admin/profile" className="flex items-center gap-3 pl-4 ml-2 border-l border-gray-200 hover:bg-gray-50 p-2 rounded-xl transition-colors cursor-pointer group">
           <div className="text-right hidden sm:block">
-            <p className="text-sm font-extrabold text-gray-900 leading-tight">{user?.name}</p>
+            <p className="text-sm font-extrabold text-gray-900 leading-tight group-hover:text-primary-600 transition-colors">{user?.name}</p>
             <p className="text-[10px] font-bold text-primary-600 uppercase tracking-widest mt-0.5">{user?.role}</p>
           </div>
-          <div className="w-11 h-11 bg-gradient-to-tr from-primary-600 to-indigo-500 rounded-full flex items-center justify-center text-white text-base font-bold shadow-md shadow-primary-500/30">
+          <div className="w-11 h-11 bg-gradient-to-tr from-primary-600 to-indigo-500 rounded-full flex items-center justify-center text-white text-base font-bold shadow-md shadow-primary-500/30 group-hover:shadow-primary-500/50 transition-shadow">
             {user?.name?.[0]?.toUpperCase() || 'A'}
           </div>
-        </div>
+        </Link>
       </div>
     </header>
   );
