@@ -29,9 +29,9 @@ const Footer = () => {
 
   const quickLinks = [
     { label: "About Us", path: "/about" },
+    { label: "Our Team", path: "/team" },
     { label: "Our Projects", path: "/projects" },
     { label: "Events", path: "/events" },
-    { label: "Success Stories", path: "/stories" },
     { label: "Gallery", path: "/gallery" },
     { label: "News", path: "/news" },
   ];
@@ -219,28 +219,6 @@ const Footer = () => {
                   {settings?.org_email || "info@ngo.org"}
                 </a>
               </div>
-            </div>
-
-            {/* Newsletter */}
-            <div>
-              <p className="text-sm font-medium text-white mb-2">Newsletter</p>
-              <form onSubmit={handleNewsletter} className="flex gap-2">
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="Your email"
-                  required
-                  className="flex-1 bg-gray-800 border border-gray-700 text-white placeholder:text-gray-500 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-primary-500"
-                />
-                <button
-                  type="submit"
-                  className="p-2 bg-primary-600 hover:bg-primary-700 text-white rounded-lg transition-colors"
-                  aria-label="Subscribe"
-                >
-                  <FiSend className="w-4 h-4" />
-                </button>
-              </form>
             </div>
           </div>
         </div>
