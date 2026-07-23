@@ -2,6 +2,7 @@ const asyncHandler = require('express-async-handler');
 const SuccessStory = require('../models/SuccessStory');
 const ApiResponse = require('../utils/apiResponse');
 const { getPagination, getPaginationMeta } = require('../utils/pagination');
+const { deleteFile } = require('../middlewares/upload');
 
 const getSuccessStories = asyncHandler(async (req, res) => {
   const { page, limit, skip } = getPagination(req.query);
@@ -47,23 +48,29 @@ const adminGetSuccessStories = asyncHandler(async (req, res) => {
 
 const createSuccessStory = asyncHandler(async (req, res) => {
   const data = { ...req.body, createdBy: req.user._id };
-  if (req.file) data.image = `/uploads/images/${req.file.filename}`;
+  if (req.file) data.image = req.file.path;
   const story = await SuccessStory.create(data);
   return ApiResponse.created(res, { story }, 'Success story created');
 });
 
 const updateSuccessStory = asyncHandler(async (req, res) => {
   const updates = { ...req.body };
-  if (req.file) updates.image = `/uploads/images/${req.file.filename}`;
-
-  const story = await SuccessStory.findByIdAndUpdate(req.params.id, updates, { new: true, runValidators: true });
+  let story = await SuccessStory.findById(req.params.id);
   if (!story) return ApiResponse.notFound(res, 'Success story not found');
+
+  if (req.file) {
+    updates.image = req.file.path;
+    if (story.image) await deleteFile(story.image);
+  }
+
+  story = await SuccessStory.findByIdAndUpdate(req.params.id, updates, { new: true, runValidators: true });
   return ApiResponse.success(res, { story }, 'Success story updated');
 });
 
 const deleteSuccessStory = asyncHandler(async (req, res) => {
   const story = await SuccessStory.findByIdAndDelete(req.params.id);
   if (!story) return ApiResponse.notFound(res, 'Success story not found');
+  if (story.image) await deleteFile(story.image);
   return ApiResponse.success(res, {}, 'Success story deleted');
 });
 

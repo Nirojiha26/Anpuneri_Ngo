@@ -65,7 +65,7 @@ const updateProfile = asyncHandler(async (req, res) => {
   const updates = { name, phone };
 
   if (req.file) {
-    updates.avatar = `/uploads/images/${req.file.filename}`;
+    updates.avatar = req.file.path;
   }
 
   const user = await User.findByIdAndUpdate(req.user._id, updates, {

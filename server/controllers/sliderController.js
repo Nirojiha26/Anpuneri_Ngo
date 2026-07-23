@@ -3,6 +3,7 @@ const Slider = require('../models/Slider');
 const ApiResponse = require('../utils/apiResponse');
 const fs = require('fs');
 const path = require('path');
+const { deleteFile } = require('../middlewares/upload');
 
 // @desc    Get all active sliders (public)
 // @route   GET /api/sliders
@@ -50,7 +51,7 @@ const adminGetSliders = asyncHandler(async (req, res) => {
 const createSlider = asyncHandler(async (req, res) => {
   const data = { ...req.body, createdBy: req.user._id };
   if (req.file) {
-    data.image = `/uploads/images/${req.file.filename}`;
+    data.image = req.file.path;
   } else {
     return ApiResponse.badRequest(res, 'Slider image is required');
   }
@@ -64,16 +65,19 @@ const createSlider = asyncHandler(async (req, res) => {
 // @access  Admin
 const updateSlider = asyncHandler(async (req, res) => {
   const updates = { ...req.body };
+  let slider = await Slider.findById(req.params.id);
+  if (!slider) return ApiResponse.notFound(res, 'Slider not found');
+
   if (req.file) {
-    updates.image = `/uploads/images/${req.file.filename}`;
+    updates.image = req.file.path;
+    if (slider.image) await deleteFile(slider.image);
   }
 
-  const slider = await Slider.findByIdAndUpdate(req.params.id, updates, {
+  slider = await Slider.findByIdAndUpdate(req.params.id, updates, {
     new: true,
     runValidators: true,
   });
   
-  if (!slider) return ApiResponse.notFound(res, 'Slider not found');
   return ApiResponse.success(res, { slider }, 'Slider updated successfully');
 });
 
@@ -84,17 +88,7 @@ const deleteSlider = asyncHandler(async (req, res) => {
   const slider = await Slider.findByIdAndDelete(req.params.id);
   if (!slider) return ApiResponse.notFound(res, 'Slider not found');
   
-  // Try to remove the file from filesystem
-  if (slider.image) {
-    const filePath = path.join(__dirname, '..', '..', 'public', slider.image);
-    if (fs.existsSync(filePath)) {
-      try {
-        fs.unlinkSync(filePath);
-      } catch (err) {
-        console.error('Error deleting slider image:', err);
-      }
-    }
-  }
+  if (slider.image) await deleteFile(slider.image);
 
   return ApiResponse.success(res, {}, 'Slider deleted successfully');
 });

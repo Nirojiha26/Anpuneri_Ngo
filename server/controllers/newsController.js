@@ -2,6 +2,7 @@ const asyncHandler = require('express-async-handler');
 const News = require('../models/News');
 const ApiResponse = require('../utils/apiResponse');
 const { getPagination, getPaginationMeta } = require('../utils/pagination');
+const { deleteFile } = require('../middlewares/upload');
 
 const getNews = asyncHandler(async (req, res) => {
   const { page, limit, skip } = getPagination(req.query);
@@ -59,26 +60,32 @@ const adminGetNews = asyncHandler(async (req, res) => {
 
 const createNews = asyncHandler(async (req, res) => {
   const data = { ...req.body, author: req.user._id };
-  if (req.file) data.image = `/uploads/images/${req.file.filename}`;
+  if (req.file) data.image = req.file.path;
   const news = await News.create(data);
   return ApiResponse.created(res, { news }, 'News created successfully');
 });
 
 const updateNews = asyncHandler(async (req, res) => {
   const updates = { ...req.body };
-  if (req.file) updates.image = `/uploads/images/${req.file.filename}`;
+  let news = await News.findById(req.params.id);
+  if (!news) return ApiResponse.notFound(res, 'News not found');
 
-  const news = await News.findByIdAndUpdate(req.params.id, updates, {
+  if (req.file) {
+    updates.image = req.file.path;
+    if (news.image) await deleteFile(news.image);
+  }
+
+  news = await News.findByIdAndUpdate(req.params.id, updates, {
     new: true,
     runValidators: true,
   });
-  if (!news) return ApiResponse.notFound(res, 'News not found');
   return ApiResponse.success(res, { news }, 'News updated successfully');
 });
 
 const deleteNews = asyncHandler(async (req, res) => {
   const news = await News.findByIdAndDelete(req.params.id);
   if (!news) return ApiResponse.notFound(res, 'News not found');
+  if (news.image) await deleteFile(news.image);
   return ApiResponse.success(res, {}, 'News deleted successfully');
 });
 

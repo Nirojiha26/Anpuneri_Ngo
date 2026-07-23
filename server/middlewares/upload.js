@@ -1,28 +1,32 @@
 const multer = require('multer');
+const { v2: cloudinary } = require('cloudinary');
+const { CloudinaryStorage } = require('multer-storage-cloudinary');
 const path = require('path');
-const fs = require('fs');
 
-// Ensure upload directories exist
-const ensureDir = (dir) => {
-  if (!fs.existsSync(dir)) {
-    fs.mkdirSync(dir, { recursive: true });
-  }
-};
+// Configure Cloudinary
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
 
-// Storage configuration (Local — swappable to Cloudinary later)
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    const uploadPath = path.join(__dirname, '../uploads/images');
-    ensureDir(uploadPath);
-    cb(null, uploadPath);
-  },
-  filename: (req, file, cb) => {
-    const uniqueSuffix = `${Date.now()}-${Math.round(Math.random() * 1e9)}`;
-    const ext = path.extname(file.originalname).toLowerCase();
-    const baseName = path.basename(file.originalname, ext)
-      .replace(/[^a-z0-9]/gi, '-')
-      .toLowerCase();
-    cb(null, `${baseName}-${uniqueSuffix}${ext}`);
+// Configure Multer Storage for Cloudinary
+const storage = new CloudinaryStorage({
+  cloudinary: cloudinary,
+  params: async (req, file) => {
+    // Determine folder based on route (optional but good for organization)
+    let folderName = 'ngo_uploads';
+    if (req.baseUrl.includes('gallery')) folderName = 'ngo_gallery';
+    if (req.baseUrl.includes('projects')) folderName = 'ngo_projects';
+    if (req.baseUrl.includes('events')) folderName = 'ngo_events';
+    if (req.baseUrl.includes('news')) folderName = 'ngo_news';
+    if (req.baseUrl.includes('team')) folderName = 'ngo_team';
+
+    return {
+      folder: folderName,
+      allowed_formats: ['jpeg', 'jpg', 'png', 'gif', 'webp'],
+      public_id: `${Date.now()}-${Math.round(Math.random() * 1e9)}`, // unique filename
+    };
   },
 });
 
@@ -46,16 +50,32 @@ const upload = multer({
   fileFilter,
 });
 
-// Helper to get public URL for uploaded file
+// Helper to get public URL for uploaded file (returns the Cloudinary URL)
 const getFileUrl = (req, filename) => {
-  return `${req.protocol}://${req.get('host')}/uploads/images/${filename}`;
+  // If the filename already looks like a URL (Cloudinary URL), return it directly
+  if (filename && filename.startsWith('http')) {
+    return filename;
+  }
+  return filename; 
 };
 
-// Delete file from local storage
-const deleteFile = (filePath) => {
-  const fullPath = path.join(__dirname, '../uploads/images', path.basename(filePath));
-  if (fs.existsSync(fullPath)) {
-    fs.unlinkSync(fullPath);
+// Delete file from Cloudinary storage
+const deleteFile = async (fileUrl) => {
+  if (!fileUrl) return;
+  try {
+    // Extract public_id from Cloudinary URL
+    // URL format: https://res.cloudinary.com/<cloud_name>/image/upload/v1234567890/folder/public_id.ext
+    const urlParts = fileUrl.split('/');
+    const fileNameWithExt = urlParts[urlParts.length - 1];
+    const folderName = urlParts[urlParts.length - 2];
+    const publicId = fileNameWithExt.split('.')[0];
+    
+    // Only attempt deletion if it's a Cloudinary URL
+    if (fileUrl.includes('cloudinary.com') && folderName && publicId) {
+       await cloudinary.uploader.destroy(`${folderName}/${publicId}`);
+    }
+  } catch (error) {
+    console.error('Error deleting file from Cloudinary:', error);
   }
 };
 

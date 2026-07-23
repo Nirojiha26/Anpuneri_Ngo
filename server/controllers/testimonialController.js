@@ -2,6 +2,7 @@ const asyncHandler = require('express-async-handler');
 const Testimonial = require('../models/Testimonial');
 const ApiResponse = require('../utils/apiResponse');
 const { getPagination, getPaginationMeta } = require('../utils/pagination');
+const { deleteFile } = require('../middlewares/upload');
 
 const getTestimonials = asyncHandler(async (req, res) => {
   const { category, featured } = req.query;
@@ -31,24 +32,43 @@ const adminGetTestimonials = asyncHandler(async (req, res) => {
 
 const createTestimonial = asyncHandler(async (req, res) => {
   const data = { ...req.body };
-  if (req.file) data.avatar = `/uploads/images/${req.file.filename}`;
+  if (req.file) data.avatar = req.file.path;
   const testimonial = await Testimonial.create(data);
   return ApiResponse.created(res, { testimonial }, 'Testimonial created');
 });
 
 const updateTestimonial = asyncHandler(async (req, res) => {
   const updates = { ...req.body };
-  if (req.file) updates.avatar = `/uploads/images/${req.file.filename}`;
-
-  const testimonial = await Testimonial.findByIdAndUpdate(req.params.id, updates, { new: true, runValidators: true });
+  let testimonial = await Testimonial.findById(req.params.id);
   if (!testimonial) return ApiResponse.notFound(res, 'Testimonial not found');
+
+  if (req.file) {
+    updates.avatar = req.file.path;
+    if (testimonial.avatar) await deleteFile(testimonial.avatar);
+  }
+
+  testimonial = await Testimonial.findByIdAndUpdate(req.params.id, updates, { new: true, runValidators: true });
   return ApiResponse.success(res, { testimonial }, 'Testimonial updated');
 });
 
 const deleteTestimonial = asyncHandler(async (req, res) => {
   const testimonial = await Testimonial.findByIdAndDelete(req.params.id);
   if (!testimonial) return ApiResponse.notFound(res, 'Testimonial not found');
+  if (testimonial.avatar) await deleteFile(testimonial.avatar);
   return ApiResponse.success(res, {}, 'Testimonial deleted');
 });
 
-module.exports = { getTestimonials, adminGetTestimonials, createTestimonial, updateTestimonial, deleteTestimonial };
+const submitPublicTestimonial = asyncHandler(async (req, res) => {
+  const data = {
+    ...req.body,
+    status: 'draft', // Always draft when submitted by public
+    rating: req.body.rating || 5, // Default 5 stars
+  };
+  
+  if (req.file) data.avatar = req.file.path;
+  
+  const testimonial = await Testimonial.create(data);
+  return ApiResponse.created(res, { testimonial }, 'Thank you! Your review has been submitted and is pending approval.');
+});
+
+module.exports = { getTestimonials, adminGetTestimonials, createTestimonial, updateTestimonial, deleteTestimonial, submitPublicTestimonial };

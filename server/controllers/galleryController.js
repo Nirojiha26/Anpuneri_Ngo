@@ -2,6 +2,7 @@ const asyncHandler = require('express-async-handler');
 const Gallery = require('../models/Gallery');
 const ApiResponse = require('../utils/apiResponse');
 const { getPagination, getPaginationMeta } = require('../utils/pagination');
+const { deleteFile } = require('../middlewares/upload');
 
 const getGallery = asyncHandler(async (req, res) => {
   const { page, limit, skip } = getPagination(req.query);
@@ -40,7 +41,7 @@ const uploadImage = asyncHandler(async (req, res) => {
 
   const data = {
     ...req.body,
-    image: `/uploads/images/${req.file.filename}`,
+    image: req.file.path,
     uploadedBy: req.user._id,
   };
 
@@ -50,16 +51,22 @@ const uploadImage = asyncHandler(async (req, res) => {
 
 const updateImage = asyncHandler(async (req, res) => {
   const updates = { ...req.body };
-  if (req.file) updates.image = `/uploads/images/${req.file.filename}`;
-
-  const image = await Gallery.findByIdAndUpdate(req.params.id, updates, { new: true, runValidators: true });
+  let image = await Gallery.findById(req.params.id);
   if (!image) return ApiResponse.notFound(res, 'Image not found');
+
+  if (req.file) {
+    updates.image = req.file.path;
+    if (image.image) await deleteFile(image.image);
+  }
+
+  image = await Gallery.findByIdAndUpdate(req.params.id, updates, { new: true, runValidators: true });
   return ApiResponse.success(res, { image }, 'Image updated successfully');
 });
 
 const deleteImage = asyncHandler(async (req, res) => {
   const image = await Gallery.findByIdAndDelete(req.params.id);
   if (!image) return ApiResponse.notFound(res, 'Image not found');
+  if (image.image) await deleteFile(image.image);
   return ApiResponse.success(res, {}, 'Image deleted successfully');
 });
 

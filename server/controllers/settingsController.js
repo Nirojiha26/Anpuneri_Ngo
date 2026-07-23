@@ -1,6 +1,7 @@
 const asyncHandler = require('express-async-handler');
 const Settings = require('../models/Settings');
 const ApiResponse = require('../utils/apiResponse');
+const { deleteFile } = require('../middlewares/upload');
 
 const getPublicSettings = asyncHandler(async (req, res) => {
   const settings = await Settings.find({ isPublic: true });
@@ -23,13 +24,18 @@ const adminGetSettings = asyncHandler(async (req, res) => {
 const updateSettings = asyncHandler(async (req, res) => {
   const { settings } = req.body;
 
-  const operations = settings.map(({ key, value }) =>
-    Settings.findOneAndUpdate(
+  const operations = settings.map(async ({ key, value }) => {
+    const oldSetting = await Settings.findOne({ key });
+    if (oldSetting && oldSetting.value !== value && typeof oldSetting.value === 'string' && oldSetting.value.includes('cloudinary.com')) {
+      await deleteFile(oldSetting.value);
+    }
+    
+    return Settings.findOneAndUpdate(
       { key },
       { value },
       { new: true, upsert: true, runValidators: true }
-    )
-  );
+    );
+  });
 
   await Promise.all(operations);
   return ApiResponse.success(res, {}, 'Settings updated successfully');
@@ -38,6 +44,11 @@ const updateSettings = asyncHandler(async (req, res) => {
 const updateSingleSetting = asyncHandler(async (req, res) => {
   const { key } = req.params;
   const { value } = req.body;
+
+  const oldSetting = await Settings.findOne({ key });
+  if (oldSetting && oldSetting.value !== value && typeof oldSetting.value === 'string' && oldSetting.value.includes('cloudinary.com')) {
+    await deleteFile(oldSetting.value);
+  }
 
   const setting = await Settings.findOneAndUpdate(
     { key },

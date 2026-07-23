@@ -67,6 +67,7 @@ export const teamService = {
 // ── Testimonials ──────────────────────────────────────────────────────
 export const testimonialService = {
   getAll: (params) => api.get('/testimonials', { params }),
+  submitPublic: (data) => api.post('/testimonials', data),
   // Admin
   adminGetAll: (params) => api.get('/admin/testimonials', { params }),
   create: (data) => api.post('/admin/testimonials', data, { headers: { 'Content-Type': 'multipart/form-data' } }),
@@ -137,6 +138,7 @@ export const settingsService = {
   adminGetAll: (params) => api.get('/admin/settings', { params }),
   update: (data) => api.put('/admin/settings', data),
   updateSingle: (key, value) => api.patch(`/admin/settings/${key}`, { value }),
+  uploadImage: (formData) => api.post('/admin/settings/upload', formData, { headers: { 'Content-Type': 'multipart/form-data' } }),
 };
 
 // ── Users ──────────────────────────────────────────────────────

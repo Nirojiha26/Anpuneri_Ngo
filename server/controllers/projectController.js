@@ -2,6 +2,7 @@ const asyncHandler = require('express-async-handler');
 const Project = require('../models/Project');
 const ApiResponse = require('../utils/apiResponse');
 const { getPagination, getPaginationMeta } = require('../utils/pagination');
+const { deleteFile } = require('../middlewares/upload');
 
 // @desc    Get all projects (public)
 // @route   GET /api/projects
@@ -68,7 +69,7 @@ const adminGetProjects = asyncHandler(async (req, res) => {
 // @access  Admin
 const createProject = asyncHandler(async (req, res) => {
   const data = { ...req.body, createdBy: req.user._id };
-  if (req.file) data.image = `/uploads/images/${req.file.filename}`;
+  if (req.file) data.image = req.file.path;
   const project = await Project.create(data);
   return ApiResponse.created(res, { project }, 'Project created successfully');
 });
@@ -78,13 +79,18 @@ const createProject = asyncHandler(async (req, res) => {
 // @access  Admin
 const updateProject = asyncHandler(async (req, res) => {
   const updates = { ...req.body };
-  if (req.file) updates.image = `/uploads/images/${req.file.filename}`;
+  let project = await Project.findById(req.params.id);
+  if (!project) return ApiResponse.notFound(res, 'Project not found');
 
-  const project = await Project.findByIdAndUpdate(req.params.id, updates, {
+  if (req.file) {
+    updates.image = req.file.path;
+    if (project.image) await deleteFile(project.image);
+  }
+
+  project = await Project.findByIdAndUpdate(req.params.id, updates, {
     new: true,
     runValidators: true,
   });
-  if (!project) return ApiResponse.notFound(res, 'Project not found');
   return ApiResponse.success(res, { project }, 'Project updated successfully');
 });
 
@@ -94,6 +100,7 @@ const updateProject = asyncHandler(async (req, res) => {
 const deleteProject = asyncHandler(async (req, res) => {
   const project = await Project.findByIdAndDelete(req.params.id);
   if (!project) return ApiResponse.notFound(res, 'Project not found');
+  if (project.image) await deleteFile(project.image);
   return ApiResponse.success(res, {}, 'Project deleted successfully');
 });
 

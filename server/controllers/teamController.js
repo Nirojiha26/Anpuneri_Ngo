@@ -2,6 +2,7 @@ const asyncHandler = require('express-async-handler');
 const TeamMember = require('../models/TeamMember');
 const ApiResponse = require('../utils/apiResponse');
 const { getPagination, getPaginationMeta } = require('../utils/pagination');
+const { deleteFile } = require('../middlewares/upload');
 
 const getTeam = asyncHandler(async (req, res) => {
   const { department } = req.query;
@@ -34,23 +35,29 @@ const adminGetTeam = asyncHandler(async (req, res) => {
 
 const createTeamMember = asyncHandler(async (req, res) => {
   const data = { ...req.body };
-  if (req.file) data.avatar = `/uploads/images/${req.file.filename}`;
+  if (req.file) data.avatar = req.file.path;
   const member = await TeamMember.create(data);
   return ApiResponse.created(res, { member }, 'Team member added successfully');
 });
 
 const updateTeamMember = asyncHandler(async (req, res) => {
   const updates = { ...req.body };
-  if (req.file) updates.avatar = `/uploads/images/${req.file.filename}`;
-
-  const member = await TeamMember.findByIdAndUpdate(req.params.id, updates, { new: true, runValidators: true });
+  let member = await TeamMember.findById(req.params.id);
   if (!member) return ApiResponse.notFound(res, 'Team member not found');
+
+  if (req.file) {
+    updates.avatar = req.file.path;
+    if (member.avatar) await deleteFile(member.avatar);
+  }
+
+  member = await TeamMember.findByIdAndUpdate(req.params.id, updates, { new: true, runValidators: true });
   return ApiResponse.success(res, { member }, 'Team member updated');
 });
 
 const deleteTeamMember = asyncHandler(async (req, res) => {
   const member = await TeamMember.findByIdAndDelete(req.params.id);
   if (!member) return ApiResponse.notFound(res, 'Team member not found');
+  if (member.avatar) await deleteFile(member.avatar);
   return ApiResponse.success(res, {}, 'Team member deleted');
 });
 

@@ -2,6 +2,7 @@ const asyncHandler = require('express-async-handler');
 const Event = require('../models/Event');
 const ApiResponse = require('../utils/apiResponse');
 const { getPagination, getPaginationMeta } = require('../utils/pagination');
+const { deleteFile } = require('../middlewares/upload');
 
 const getEvents = asyncHandler(async (req, res) => {
   const { page, limit, skip } = getPagination(req.query);
@@ -58,26 +59,32 @@ const adminGetEvents = asyncHandler(async (req, res) => {
 
 const createEvent = asyncHandler(async (req, res) => {
   const data = { ...req.body, createdBy: req.user._id };
-  if (req.file) data.image = `/uploads/images/${req.file.filename}`;
+  if (req.file) data.image = req.file.path;
   const event = await Event.create(data);
   return ApiResponse.created(res, { event }, 'Event created successfully');
 });
 
 const updateEvent = asyncHandler(async (req, res) => {
   const updates = { ...req.body };
-  if (req.file) updates.image = `/uploads/images/${req.file.filename}`;
+  let event = await Event.findById(req.params.id);
+  if (!event) return ApiResponse.notFound(res, 'Event not found');
 
-  const event = await Event.findByIdAndUpdate(req.params.id, updates, {
+  if (req.file) {
+    updates.image = req.file.path;
+    if (event.image) await deleteFile(event.image);
+  }
+
+  event = await Event.findByIdAndUpdate(req.params.id, updates, {
     new: true,
     runValidators: true,
   });
-  if (!event) return ApiResponse.notFound(res, 'Event not found');
   return ApiResponse.success(res, { event }, 'Event updated successfully');
 });
 
 const deleteEvent = asyncHandler(async (req, res) => {
   const event = await Event.findByIdAndDelete(req.params.id);
   if (!event) return ApiResponse.notFound(res, 'Event not found');
+  if (event.image) await deleteFile(event.image);
   return ApiResponse.success(res, {}, 'Event deleted successfully');
 });
 
